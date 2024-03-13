@@ -12,25 +12,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import java.io.File;
-import java.security.Permissions;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+    final List<File> files = new ArrayList<>();
+    List<File> imageDirectories = new ArrayList<>();
+    List<String> directoriesName = new ArrayList<>();
+
+    private Button buttonAllImages;
+    private Button buttonAlbums;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
 
+        buttonAllImages = findViewById(R.id.buttonAllImages);
+        buttonAlbums = findViewById(R.id.buttonAlbums);
+    }
     private boolean isStarGalleryInitialized;
     private static final int REQUEST_PERMISSIONS = 1234;
     private static final String[] PERMISSIONS = {
@@ -66,23 +76,49 @@ public class MainActivity extends AppCompatActivity {
         }
         // init app
         if (!isStarGalleryInitialized) {
-            final ListView listView = findViewById(R.id.listView);
+            final GridView gridView = findViewById(R.id.gridView);
             final StarGalleryAdapter galleryAdapter = new StarGalleryAdapter();
-            final File imagesDir = new File(String.valueOf(
+
+            File imagesDirPictures = new File(String.valueOf(
                     Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_PICTURES
                     )));
-            final File[] files = imagesDir.listFiles();
-            final int filesCount = files.length;
+
+            File imagesDirDownloads = new File(String.valueOf(
+                    Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOWNLOADS
+                    )));
+
+            File imagesDirDCIM = new File(String.valueOf(
+                    Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DCIM
+                    )));
+
+            imageDirectories.add(imagesDirPictures);
+            imageDirectories.add(imagesDirDownloads);
+            imageDirectories.add(imagesDirDCIM);
+
+            directoriesName.add("Pictures");
+            directoriesName.add("Downloads");
+            directoriesName.add("DCIM");
+
+            for (File directory : imageDirectories) {
+                File[] dir_files = directory.listFiles();
+                if (dir_files != null) {
+                    files.addAll(Arrays.asList(dir_files));
+                }
+            }
+
+            final int filesCount = files.size();
             final List<String> filesList = new ArrayList<>();
             for (int i=0; i<filesCount; i++) {
-                final String path = files[i].getAbsolutePath();
+                final String path = files.get(i).getAbsolutePath();
                 if (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg")) {
                     filesList.add(path);
                 }
             }
             galleryAdapter.setData(filesList);
-            listView.setAdapter(galleryAdapter);
+            gridView.setAdapter(galleryAdapter);
             isStarGalleryInitialized = true;
         }
     }
