@@ -32,9 +32,10 @@
     <GridView
         android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:verticalSpacing="5dip" android:horizontalSpacing="0dip"
-        android:numColumns="auto_fit" android:columnWidth="150dip"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="5dp"
         android:stretchMode="spacingWidth"/>
+
 
 </LinearLayout>

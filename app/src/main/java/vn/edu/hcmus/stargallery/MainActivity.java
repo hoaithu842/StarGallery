@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,15 +43,18 @@ public class MainActivity extends AppCompatActivity {
         buttonAllImages = findViewById(R.id.buttonAllImages);
         buttonAlbums = findViewById(R.id.buttonAlbums);
     }
+
     private boolean isStarGalleryInitialized;
+    private List<String> filesList;
     private static final int REQUEST_PERMISSIONS = 1234;
     private static final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     private static int PERMISSIONS_COUNT = 2;
+
     private boolean arePermissionsDenied() {
-        for (int i=0; i<PERMISSIONS_COUNT; i++) {
+        for (int i = 0; i < PERMISSIONS_COUNT; i++) {
             if (checkSelfPermission(PERMISSIONS[i]) != PackageManager.PERMISSION_GRANTED) {
                 return true;
             }
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onRequestPermissionsResult(final int requestCode, final String[] permissions, final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==REQUEST_PERMISSIONS && grantResults.length>0) {
+        if (requestCode == REQUEST_PERMISSIONS && grantResults.length > 0) {
             if (arePermissionsDenied()) {
                 ((ActivityManager) Objects.requireNonNull(this.getSystemService(ACTIVITY_SERVICE))).clearApplicationUserData();
                 recreate();
@@ -68,6 +73,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void addImagesFrom(String dirPath) {
+        final File imagesDir = new File(dirPath);
+        final File[] files = imagesDir.listFiles();
+        for (File file : files) {
+            final String path = file.getAbsolutePath();
+            if (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg")) {
+                filesList.add(path);
+            }
+        }
+    }
+
     protected void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && arePermissionsDenied()) {
@@ -76,47 +93,64 @@ public class MainActivity extends AppCompatActivity {
         }
         // init app
         if (!isStarGalleryInitialized) {
+            filesList = new ArrayList<>();
+            addImagesFrom(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)));
+            addImagesFrom(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
+            addImagesFrom(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)));
+
             final GridView gridView = findViewById(R.id.gridView);
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            int ColNum = 4;
+//            int totalHorizontalSpacing = (int) (10* (ColNum - 1)); // Calculate total horizontal spacing
+            int screenWidth = displayMetrics.widthPixels ; //- totalHorizontalSpacing; // Subtract total spacing from screen width
+            int columnWidth = screenWidth / ColNum; // Divide by number of columns
+            Context context = getApplicationContext();
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, screenWidth + " " + gridView.getHorizontalSpacing() + " " + columnWidth, duration);
+            toast.show();
+            gridView.setColumnWidth(columnWidth);
+
+//            gridView.setNumColumns(4);
             final StarGalleryAdapter galleryAdapter = new StarGalleryAdapter();
-
-            File imagesDirPictures = new File(String.valueOf(
-                    Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_PICTURES
-                    )));
-
-            File imagesDirDownloads = new File(String.valueOf(
-                    Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOWNLOADS
-                    )));
-
-            File imagesDirDCIM = new File(String.valueOf(
-                    Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DCIM
-                    )));
-
-            imageDirectories.add(imagesDirPictures);
-            imageDirectories.add(imagesDirDownloads);
-            imageDirectories.add(imagesDirDCIM);
-
-            directoriesName.add("Pictures");
-            directoriesName.add("Downloads");
-            directoriesName.add("DCIM");
-
-            for (File directory : imageDirectories) {
-                File[] dir_files = directory.listFiles();
-                if (dir_files != null) {
-                    files.addAll(Arrays.asList(dir_files));
-                }
-            }
-
-            final int filesCount = files.size();
-            final List<String> filesList = new ArrayList<>();
-            for (int i=0; i<filesCount; i++) {
-                final String path = files.get(i).getAbsolutePath();
-                if (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg")) {
-                    filesList.add(path);
-                }
-            }
+            galleryAdapter.setItemSize(columnWidth);
+//           File imagesDirPictures = new File(String.valueOf(
+//                    Environment.getExternalStoragePublicDirectory(
+//                            Environment.DIRECTORY_PICTURES
+//                    )));
+//
+//            File imagesDirDownloads = new File(String.valueOf(
+//                    Environment.getExternalStoragePublicDirectory(
+//                            Environment.DIRECTORY_DOWNLOADS
+//                    )));
+//
+//            File imagesDirDCIM = new File(String.valueOf(
+//                    Environment.getExternalStoragePublicDirectory(
+//                            Environment.DIRECTORY_DCIM
+//                    )));
+//
+//            imageDirectories.add(imagesDirPictures);
+//            imageDirectories.add(imagesDirDownloads);
+//            imageDirectories.add(imagesDirDCIM);
+//
+//            directoriesName.add("Pictures");
+//            directoriesName.add("Downloads");
+//            directoriesName.add("DCIM");
+//
+//            for (File directory : imageDirectories) {
+//                File[] dir_files = directory.listFiles();
+//                if (dir_files != null) {
+//                    files.addAll(Arrays.asList(dir_files));
+//                }
+//            }
+//
+//            final int filesCount = files.size();
+//            for (int i=0; i<filesCount; i++) {
+//                final String path = files.get(i).getAbsolutePath();
+//                if (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg")) {
+//                    filesList.add(path);
+//                }
+//            }
             galleryAdapter.setData(filesList);
             gridView.setAdapter(galleryAdapter);
             isStarGalleryInitialized = true;
@@ -125,12 +159,19 @@ public class MainActivity extends AppCompatActivity {
 
     final class StarGalleryAdapter extends BaseAdapter {
         private List<String> data = new ArrayList<>();
+        private int itemSize; // Size of each item
+
         void setData(List<String> data) {
-            if (this.data.size()>0) {
+            if (this.data.size() > 0) {
                 data.clear();
             }
             this.data.addAll(data);
             notifyDataSetChanged();
+        }
+
+        void setItemSize(int size) {
+            this.itemSize = size;
+            notifyDataSetChanged(); // Notify adapter about the size change
         }
 
         @Override
@@ -151,8 +192,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup viewGroup) {
             final ImageView imageView;
-            if (convertView==null) {
-                imageView = (ImageView) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
+            if (convertView == null) {
+                imageView = new ImageView(viewGroup.getContext());
+                imageView.setLayoutParams(new GridView.LayoutParams(itemSize, itemSize)); // Set square dimensions
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
                 imageView = (ImageView) convertView;
             }
