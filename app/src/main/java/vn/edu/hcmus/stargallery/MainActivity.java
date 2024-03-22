@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             final GridView gridView = findViewById(R.id.gridView);
             DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
             int ColNum = 4;
-//            int totalHorizontalSpacing = (int) (10* (ColNum - 1)); // Calculate total horizontal spacing
             int screenWidth = displayMetrics.widthPixels ; //- totalHorizontalSpacing; // Subtract total spacing from screen width
             int columnWidth = screenWidth / ColNum; // Divide by number of columns
             Context context = getApplicationContext();
@@ -112,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
             gridView.setColumnWidth(columnWidth);
 
-//            gridView.setNumColumns(4);
             final StarGalleryAdapter galleryAdapter = new StarGalleryAdapter();
             galleryAdapter.setItemSize(columnWidth);
 
@@ -136,14 +134,17 @@ public class MainActivity extends AppCompatActivity {
                     filesList.add(path);
                 }
             }
+
             galleryAdapter.setData(filesList);
             gridView.setAdapter(galleryAdapter);
+
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                     String name = filesList.get(position).substring(filesList.get(position).lastIndexOf('/')+1);
                     String imagePath = filesList.get(position);
                     Intent intent = new Intent(MainActivity.this, ImageDetailActivity.class);
+                    intent.putExtra("imagePaths", filesList.toArray(new String[0])); // Pass the array of image paths
                     intent.putExtra("imagePath", imagePath);
                     startActivity(intent);
                 }
