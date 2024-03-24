@@ -93,8 +93,7 @@ public class ImageDetailActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the click event here
-                Toast.makeText(ImageDetailActivity.this, "backBtn clicked!", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
         detailBtn.setOnClickListener(new View.OnClickListener() {
@@ -187,8 +186,9 @@ public class ImageDetailActivity extends AppCompatActivity {
         rotateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the click event here
-                Toast.makeText(ImageDetailActivity.this, "rotateBtn clicked!", Toast.LENGTH_SHORT).show();
+                if (imageView != null) {
+                    imageView.setRotation(imageView.getRotation() + 90);
+                }
             }
         });
 
