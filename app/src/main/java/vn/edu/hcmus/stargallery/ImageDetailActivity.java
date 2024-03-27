@@ -1,13 +1,17 @@
 package vn.edu.hcmus.stargallery;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.bumptech.glide.Glide;
 import java.util.Arrays;
 
@@ -172,8 +176,17 @@ public class ImageDetailActivity extends AppCompatActivity {
         favorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the click event here
-                Toast.makeText(ImageDetailActivity.this, "favorBtn clicked!", Toast.LENGTH_SHORT).show();
+//                // Handle the click event here
+//                Drawable heart = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.heart_btn);
+//                Drawable currentDrawable = favorBtn.getDrawable(); // Get the current drawable of the button
+//                if (currentDrawable.bytesEqualTo((heart) && currentDrawable.pixelsEqualTo((heart)) {
+//                    favorBtn.setImageResource(R.drawable.heart_btn_filled);
+                    Toast.makeText(ImageDetailActivity.this, "Liked", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    favorBtn.setImageResource(R.drawable.heart_btn);
+//                    Toast.makeText(ImageDetailActivity.this, "Unliked", Toast.LENGTH_SHORT).show();
+//                }
+
             }
         });
         delBtn.setOnClickListener(new View.OnClickListener() {

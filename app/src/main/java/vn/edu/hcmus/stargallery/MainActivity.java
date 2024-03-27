@@ -118,8 +118,9 @@ public class MainActivity extends AppCompatActivity {
             addImagesFrom(Environment.DIRECTORY_PICTURES, "Pictures");
             addImagesFrom(Environment.DIRECTORY_DOWNLOADS, "Downloads");
             addImagesFrom(Environment.DIRECTORY_DCIM, "DCIM");
-
-            for (File directory : imageDirectories) {
+            addImagesFrom(Environment.DIRECTORY_SCREENSHOTS,"Screenshots");
+//            addImagesFrom(Environment.D);
+        for (File directory : imageDirectories) {
                 File[] dir_files = directory.listFiles();
                 if (dir_files != null) {
                     files.addAll(Arrays.asList(dir_files));
