@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         buttonAllImages = findViewById(R.id.buttonAllImages);
         buttonAlbums = findViewById(R.id.buttonAlbums);
     }
@@ -145,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
                     String name = filesList.get(position).substring(filesList.get(position).lastIndexOf('/')+1);
                     String imagePath = filesList.get(position);
                     Intent intent = new Intent(MainActivity.this, ImageDetailActivity.class);
-                    intent.putExtra("imagePaths", filesList.toArray(new String[0])); // Pass the array of image paths
+//                    intent.putExtra("imagePaths", filesList.toArray(new String[0])); // Pass the array of image paths
+                    intent.putExtra("imagePaths", (ArrayList<String>)filesList); // Pass the array of image paths
                     intent.putExtra("imagePath", imagePath);
                     startActivity(intent);
                 }

@@ -1,19 +1,27 @@
 package vn.edu.hcmus.stargallery;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.*;
 import android.widget.*;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
+
+import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 public class ImageDetailActivity extends AppCompatActivity {
 
@@ -25,12 +33,17 @@ public class ImageDetailActivity extends AppCompatActivity {
     static final int MIN_DISTANCE = 150; // Minimum distance for a swipe to be recognized
     private ScaleGestureDetector scaleGestureDetector;
     private float scaleFactor = 1.0f;
-    private String[] imagePaths;
+    private List<String> imagePaths;
     private int currentIndex;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+        }
 
         imageView = findViewById(R.id.imageView);
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
@@ -39,8 +52,9 @@ public class ImageDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent != null) {
-            imagePaths = intent.getStringArrayExtra("imagePaths");
-            if (imagePaths == null || imagePaths.length == 0) {
+
+            imagePaths = intent.getStringArrayListExtra("imagePaths");
+            if (imagePaths == null || imagePaths.isEmpty()) {
                 // Handle case where no image paths are provided
                 // return;
             }
@@ -162,8 +176,17 @@ public class ImageDetailActivity extends AppCompatActivity {
         shareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the click event here
-                Toast.makeText(ImageDetailActivity.this, "shareBtn clicked!", Toast.LENGTH_SHORT).show();
+                String filePath = imagePaths.get(currentIndex);
+                final Uri imgUri = Uri.parse("file://" + filePath);
+                final Intent intent = new Intent(Intent.ACTION_SEND);
+                if (filePath.endsWith(".png")) {
+                    intent.setType("image/png");
+                } else {
+                    intent.setType("image/jpeg");
+                }
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.putExtra(Intent.EXTRA_STREAM, imgUri);
+                startActivity(Intent.createChooser(intent, "Share to:"));
             }
         });
         editBtn.setOnClickListener(new View.OnClickListener() {
@@ -192,8 +215,30 @@ public class ImageDetailActivity extends AppCompatActivity {
         delBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the click event here
-                Toast.makeText(ImageDetailActivity.this, "delBtn clicked!", Toast.LENGTH_SHORT).show();
+                final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(ImageDetailActivity.this);
+//                Toast.makeText(ImageDetailActivity.this, "Unliked", Toast.LENGTH_SHORT).show();
+                confirmDialog.setTitle("Delete photo");
+                confirmDialog.setMessage("Do you want to delete it?");
+                confirmDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        new File(imagePaths.get(currentIndex)).delete();
+                        imagePaths.remove(currentIndex);
+                        if (imagePaths.size() > currentIndex) {
+                            loadImage(imagePaths.get(currentIndex));
+                        } else if (imagePaths.size() > currentIndex - 1) {
+                            currentIndex--;
+                            loadImage(imagePaths.get(currentIndex-1));
+                        }
+                    }
+                });
+                confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+                confirmDialog.show();
             }
         });
         rotateBtn.setOnClickListener(new View.OnClickListener() {
@@ -208,9 +253,9 @@ public class ImageDetailActivity extends AppCompatActivity {
 
     }
     private void showNextImage() {
-        if (currentIndex < imagePaths.length - 1) {
+        if (currentIndex < imagePaths.size() - 1) {
             currentIndex++;
-            loadImage(imagePaths[currentIndex]);
+            loadImage(imagePaths.get(currentIndex));
         } else {
             Toast.makeText(ImageDetailActivity.this, "No more images", Toast.LENGTH_SHORT).show();
         }
@@ -218,7 +263,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     private void showPreviousImage() {
         if (currentIndex > 0) {
             currentIndex--;
-            loadImage(imagePaths[currentIndex]);
+            loadImage(imagePaths.get(currentIndex));
         } else {
             Toast.makeText(ImageDetailActivity.this, "No previous images", Toast.LENGTH_SHORT).show();
         }
