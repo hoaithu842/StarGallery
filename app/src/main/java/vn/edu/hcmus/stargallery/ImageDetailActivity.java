@@ -20,6 +20,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.io.File;
 import java.util.ArrayList;
 
+import vn.edu.hcmus.stargallery.Fragment.ImagesFragment;
 import vn.edu.hcmus.stargallery.Listener.OnSwipeTouchListener;
 
 public class ImageDetailActivity extends AppCompatActivity {
@@ -152,29 +153,32 @@ public class ImageDetailActivity extends AppCompatActivity {
         finish();
     }
     public void onDeleteBtnClick() {
-//                final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(ImageDetailActivity.this);
-//                confirmDialog.setTitle("Delete photo");
-//                confirmDialog.setMessage("Do you want to delete it?");
-//                confirmDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        new File(images_list.get(currentIndex)).delete();
-//                        images_list.remove(currentIndex);
-//                        if (images_list.size() > currentIndex) {
-//                            loadImage(images_list.get(currentIndex));
-//                        } else if (images_list.size() > currentIndex - 1) {
-//                            currentIndex--;
-//                            loadImage(images_list.get(currentIndex-1));
-//                        }
-//                    }
-//                });
-//                confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        dialogInterface.cancel();
-//                    }
-//                });
-//                confirmDialog.show();
+        final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(ImageDetailActivity.this);
+        confirmDialog.setTitle("Delete photo");
+        confirmDialog.setMessage("Do you want to delete it?");
+        confirmDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+//                Toast.makeText(getApplicationContext(), "H notify ne", Toast.LENGTH_SHORT).show();
+//                notifyImageDeleted(currentIndex); // Notify the fragment about image deletion
+//                new File(images_list.get(currentIndex)).delete();
+//                images_list.remove(currentIndex);
+//                if (images_list.size() > currentIndex) {
+//                    loadImage(images_list.get(currentIndex));
+//                } else if (images_list.size() > currentIndex - 1) {
+//                    currentIndex--;
+//                    loadImage(images_list.get(currentIndex-1));
+//                }
+            }
+        });
+        confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.cancel();
+                dialogInterface.dismiss();
+            }
+        });
+        confirmDialog.show();
     }
     public void onRotateBtnClick() {
         finish();

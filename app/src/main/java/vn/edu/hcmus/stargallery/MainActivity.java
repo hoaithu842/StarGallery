@@ -1,6 +1,7 @@
 package vn.edu.hcmus.stargallery;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.os.Environment.MEDIA_MOUNTED;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,11 +56,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void checkPermissions() {
-        int result= ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
-        if(result== PackageManager.PERMISSION_GRANTED){
+        int result1 = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
+        int result2 = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+        if(result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED){
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, imagesFragment).commit();
         }else{
-            ActivityCompat.requestPermissions(this,new String[]{READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(this,new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
     }
     @Override

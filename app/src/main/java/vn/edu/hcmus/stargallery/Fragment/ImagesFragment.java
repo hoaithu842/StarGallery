@@ -44,8 +44,6 @@ public class ImagesFragment extends Fragment {
         images=new ArrayList<>();
         adapter=new ImagesViewAdapter(getContext(),images);
         manager=new GridLayoutManager(getContext(),4);
-
-
         adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
