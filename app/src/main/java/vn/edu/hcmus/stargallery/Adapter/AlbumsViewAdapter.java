@@ -1,11 +1,13 @@
 package vn.edu.hcmus.stargallery.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +34,8 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         this.albums_name = new ArrayList<>(albums.keySet());
-//        holder.album_name.setText(albums_name.get(position));
+        holder.album_name.setText(albums_name.get(position));
+        holder.album_quant.setText(Integer.toString(albums.get(albums_name.get(position)).size()) + " images");
 
         File album_cover = new File(albums.get(albums_name.get(position)).get(0));
         if(album_cover.exists()){
@@ -51,26 +54,24 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
 
     @Override
     public int getItemCount() {
-//        return 0;
-        return albums_name.size();
+        return albums.size();
     }
 
     public AlbumsViewAdapter(Context context, HashMap<String, ArrayList<String>> albums) {
         this.context = context;
         this.albums = albums;
-//        this.albums_name = (ArrayList<String>) albums.keySet();
         this.albums_name = new ArrayList<>(albums.keySet());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView album_cover;
-//        private TextView album_name;
-//        private TextView album_quant;
+        private TextView album_name;
+        private TextView album_quant;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             album_cover = itemView.findViewById(R.id.album_cover);
-//            album_name = itemView.findViewById(R.id.album_name);
-//            album_quant = itemView.findViewById(R.id.album_quant);
+            album_name = itemView.findViewById(R.id.album_name);
+            album_quant = itemView.findViewById(R.id.album_quant);
         }
     }
 }

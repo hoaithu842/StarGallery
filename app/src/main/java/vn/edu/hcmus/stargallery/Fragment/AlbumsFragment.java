@@ -44,7 +44,7 @@ public class AlbumsFragment extends Fragment {
 
         albums = new HashMap<>();
         adapter = new AlbumsViewAdapter(getContext(), albums);
-        manager = new GridLayoutManager(getContext(),4);
+        manager = new GridLayoutManager(getContext(),2);
 //        adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
 //            @Override
 //            public void onClick(int position) {
@@ -84,23 +84,6 @@ public class AlbumsFragment extends Fragment {
             }
 //                cursor.close();
 //            }
-
-            // Now you have images categorized by albums in the "albums" HashMap
-            // You can update your UI accordingly, for example:
-            // 1. Display albums in a RecyclerView
-            // 2. When an album is clicked, display images from that album
-            // 3. Implement logic to handle image clicks and opening them in detail view
-
-            // Example:
-            // 1. You can loop through the albums HashMap and display each album
-            for (String albumName : albums.keySet()) {
-                Log.d("Album", albumName);
-                ArrayList<String> imagesList = albums.get(albumName);
-//                for (String imagePath : imagesList) {
-//                    Log.d("Image", imagePath);
-//                }
-                Log.d("Number of photos", Integer.toString(imagesList.size()));
-            }
             albumsView.getAdapter().notifyDataSetChanged();
         }
     }
@@ -115,22 +98,6 @@ public class AlbumsFragment extends Fragment {
         loadAlbums();
         return layout;
     }
-
-//    private void loadImages() {
-//        boolean SDCard= Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
-//        if(SDCard){
-//            final String[] colums={MediaStore.Images.Media.DATA,MediaStore.Images.Media._ID};
-//            final String order=MediaStore.Images.Media.DATE_TAKEN+" DESC";
-//            Cursor cursor=getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,colums,null,null,order);
-//            int count =cursor.getCount();
-//            for(int i=0;i<count;i++){
-//                cursor.moveToPosition(i);
-//                int colunmindex=cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-//                images.add(cursor.getString(colunmindex));
-//            }
-//            imagesView.getAdapter().notifyDataSetChanged();
-//        }
-//    }
     private void loadAlbums() {
         boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
         if (SDCard) {
@@ -155,22 +122,6 @@ public class AlbumsFragment extends Fragment {
                     }
                 }
 //                cursor.close();
-//            }
-
-            // Now you have images categorized by albums in the "albums" HashMap
-            // You can update your UI accordingly, for example:
-            // 1. Display albums in a RecyclerView
-            // 2. When an album is clicked, display images from that album
-            // 3. Implement logic to handle image clicks and opening them in detail view
-
-            // Example:
-            // 1. You can loop through the albums HashMap and display each album
-//            for (String albumName : albums.keySet()) {
-//                Log.d("Album", albumName);
-//                ArrayList<String> imagesList = albums.get(albumName);
-//                for (String imagePath : imagesList) {
-//                    Log.d("Image", imagePath);
-//                }
 //            }
             albumsView.getAdapter().notifyDataSetChanged();
         }
