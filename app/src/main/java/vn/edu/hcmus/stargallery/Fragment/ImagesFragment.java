@@ -50,9 +50,8 @@ public class ImagesFragment extends Fragment {
             @Override
             public void onClick(int position) {
                 Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-                ImageDetailActivity activity;
                 intent.putExtra("image_path", images.get(position));
-                intent.putExtra("images_list", images.toArray(new String[0]));
+                intent.putStringArrayListExtra("images_list", images);
                 startActivity(intent);
             }
         });
