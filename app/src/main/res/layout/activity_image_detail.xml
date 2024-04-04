@@ -8,11 +8,11 @@
     android:layout_margin="3dp">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/edit_nav_top"
+        android:id="@+id/detail_nav_top"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/img_edit_nav_menu_top" />
+        app:menu="@menu/detail_nav_top_menu" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -23,10 +23,10 @@
     </ImageView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/edit_nav_bot"
+        android:id="@+id/detail_nav_bot"
         app:labelVisibilityMode="labeled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/img_edit_nav_menu_bot"/>
+        app:menu="@menu/detail_nav_bot_menu"/>
 
 </LinearLayout>
