@@ -5,13 +5,14 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:labelVisibilityMode="unlabeled">
 
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="6"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_nav"
@@ -19,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         app:menu="@menu/main_nav_menu"/>
+
+
 
 </LinearLayout>
 

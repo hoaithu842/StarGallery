@@ -7,7 +7,9 @@
 <!--        android:title="@string/menu_settings"-->
 <!--        android:icon="@drawable/ic_add" />-->
     <item android:id="@+id/show_photos"
-        android:title="All photos"/>
+        android:title="All photos"
+        android:icon="@drawable/library_icon"/>
     <item android:id="@+id/show_albums"
-        android:title="Albums"/>
+        android:title="Albums"
+        android:icon="@drawable/albums_icon"/>
 </menu>

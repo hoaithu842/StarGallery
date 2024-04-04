@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--    <item android:id="@+id/action_search"-->
+<!--        android:title="@string/menu_search"-->
+<!--        android:icon="@drawable/ic_search" />-->
+<!--    <item android:id="@+id/action_settings"-->
+<!--        android:title="@string/menu_settings"-->
+<!--        android:icon="@drawable/ic_add" />-->
+    <item android:id="@+id/backBtn"
+        android:layout_weight="1"
+        android:title=""
+        android:layout_width="0dp"
+        android:icon="@drawable/back_btn"/>
+
+    <item
+        android:layout_weight="100"
+        android:title=""/>
+    <item
+        android:layout_weight="100"
+        android:title=""/>
+
+    <item android:id="@+id/infoBtn"
+        android:layout_weight="1"
+        android:title=""
+        android:layout_width="0dp"
+        android:icon="@drawable/info_btn"/>
+
+</menu>

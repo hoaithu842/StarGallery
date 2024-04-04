@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--    <item android:id="@+id/action_search"-->
+<!--        android:title="@string/menu_search"-->
+<!--        android:icon="@drawable/ic_search" />-->
+<!--    <item android:id="@+id/action_settings"-->
+<!--        android:title="@string/menu_settings"-->
+<!--        android:icon="@drawable/ic_add" />-->
+    <item android:id="@+id/shareBtn"
+        android:title="Share"
+        app:labelVisibilityMode="unlabeled"
+        android:icon="@drawable/share_btn"/>
+    <item android:id="@+id/editBtn"
+        android:title="Edit"
+        android:icon="@drawable/edit_btn"/>
+    <item android:id="@+id/favoriteBtn"
+        android:title="Favorite"
+        android:icon="@drawable/heart_btn"/>
+    <item android:id="@+id/deleteBtn"
+        android:title="Delete"
+        android:icon="@drawable/delete_btn"/>
+    <item android:id="@+id/rotateBtn"
+        android:title="Rotate"
+        android:icon="@drawable/rotate_btn"/>
+
+</menu>
