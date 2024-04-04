@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermissions() {
         int result= ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
         if(result== PackageManager.PERMISSION_GRANTED){
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, imagesFragment).commit();
         }else{
             ActivityCompat.requestPermissions(this,new String[]{READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }

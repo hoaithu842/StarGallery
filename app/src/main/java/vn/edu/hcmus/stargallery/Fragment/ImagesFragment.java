@@ -1,34 +1,30 @@
 package vn.edu.hcmus.stargallery.Fragment;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.os.Environment.MEDIA_MOUNTED;
-import android.content.pm.PackageManager;
+
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.ContextWrapper;
 
-
-import static android.Manifest.permission.MANAGE_EXTERNAL_STORAGE;
-import android.Manifest;
-import android.widget.Toast;
-
+import java.io.File;
 import java.util.ArrayList;
 
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
+import vn.edu.hcmus.stargallery.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.R;
 
 public class ImagesFragment extends Fragment {
@@ -48,6 +44,18 @@ public class ImagesFragment extends Fragment {
         images=new ArrayList<>();
         adapter=new ImagesViewAdapter(getContext(),images);
         manager=new GridLayoutManager(getContext(),4);
+
+
+        adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position) {
+                Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+                ImageDetailActivity activity;
+                intent.putExtra("image_path", images.get(position));
+                intent.putExtra("images_list", images.toArray(new String[0]));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
