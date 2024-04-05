@@ -5,6 +5,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.io.IOException;
+
 public abstract class OnSwipeTouchListener implements ImageView.OnTouchListener {
 
     private final GestureDetector gestureDetector;
@@ -36,7 +38,11 @@ public abstract class OnSwipeTouchListener implements ImageView.OnTouchListener 
                         if (diffY > 0) {
                             onSwipeBottom();
                         } else {
-                            onSwipeTop();
+                            try {
+                                onSwipeTop();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                         return true;
                     }
@@ -53,6 +59,6 @@ public abstract class OnSwipeTouchListener implements ImageView.OnTouchListener 
     public abstract void onSwipeRight();
 
     public abstract void onSwipeLeft();
-    public abstract void onSwipeTop();
+    public abstract void onSwipeTop() throws IOException;
     public abstract void onSwipeBottom();
 }

@@ -3,8 +3,10 @@ package vn.edu.hcmus.stargallery;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import vn.edu.hcmus.stargallery.Fragment.ImagesFragment;
@@ -76,7 +79,11 @@ public class ImageDetailActivity extends AppCompatActivity {
                     onBackBtnClick();
                 }
                 else if(item.getItemId() == R.id.infoBtn) {
-                    onInfoBtnClick();
+                    try {
+                        onInfoBtnClick();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 return false;
@@ -107,7 +114,7 @@ public class ImageDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSwipeTop() {
+            public void onSwipeTop() throws IOException {
                 showInfo();
             }
 
@@ -140,11 +147,40 @@ public class ImageDetailActivity extends AppCompatActivity {
             Toast.makeText(ImageDetailActivity.this, "No previous images", Toast.LENGTH_SHORT).show();
         }
     }
-    public void showInfo() {
+    public void showInfo() throws IOException {
+//        Uri uri = ImageView.setImageURI(new File(image_path)));
+//        gfgIn = getContentResolver().openInputStream(uri);
+//        ExifInterface exifInterface = new ExifInterface(new File(image_path));
+        ExifInterface exifInterface = new ExifInterface(new File(image_path).getAbsolutePath());
+        String imageDateTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+        String imageMake = exifInterface.getAttribute(ExifInterface.TAG_MAKE);
+        String imageModel = exifInterface.getAttribute(ExifInterface.TAG_MODEL);
+        String imageFlash = exifInterface.getAttribute(ExifInterface.TAG_FLASH);
+        String imageFocalLength = exifInterface.getAttribute(ExifInterface.TAG_FOCAL_LENGTH);
+        String imageLength = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
+        String imageWidth = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
+        String imageISO = exifInterface.getAttribute(ExifInterface.TAG_ISO);
+        String imageResolution = exifInterface.getAttribute(ExifInterface.TAG_RESOLUTION_UNIT);
+
+        Log.d("exif", imageDateTime);
+        Log.d("exif", imageMake);
+        Log.d("exif", imageModel);
+        Log.d("exif", imageFlash);
+        Log.d("exif", imageFocalLength);
+        Log.d("exif", imageLength);
+        Log.d("exif", imageWidth);
+        Log.d("exif", imageISO);
+        Log.d("exif", imageResolution);
+
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         View bottomSheet = getLayoutInflater().inflate(R.layout.info_bottom_sheet, null);
         dialog.setContentView(bottomSheet);
         if (!dialog.isShowing()) {
+            TextView txt;
+
+            txt = bottomSheet.findViewById(R.id.image_date_taken);
+            txt.setText(imageDateTime);
+
             dialog.show();
         } else {
             dialog.dismiss();
@@ -153,16 +189,8 @@ public class ImageDetailActivity extends AppCompatActivity {
     public void onBackBtnClick(){
         finish();
     }
-    public void onInfoBtnClick(){
+    public void onInfoBtnClick() throws IOException {
         showInfo();
-//        BottomSheetDialog dialog = new BottomSheetDialog(this);
-//        View bottomSheet = getLayoutInflater().inflate(R.layout.info_bottom_sheet, null);
-//        dialog.setContentView(bottomSheet);
-//        if (!dialog.isShowing()) {
-//            dialog.show();
-//        } else {
-//            dialog.dismiss();
-//        }
     }
     public void onShareBtnClick() {
         if (images_list != null && currentIndex >= 0 && currentIndex < images_list.size()) {
