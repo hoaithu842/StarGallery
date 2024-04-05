@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<!--    <item android:id="@+id/action_search"-->
+<!--        android:title="@string/menu_search"-->
+<!--        android:icon="@drawable/ic_search" />-->
+<!--    <item android:id="@+id/action_settings"-->
+<!--        android:title="@string/menu_settings"-->
+<!--        android:icon="@drawable/ic_add" />-->
+    <item android:id="@+id/cropBtn"
+        android:title="Crop &amp; Rotate"
+        android:icon="@drawable/c_crop_btn"/>
+    <item android:id="@+id/filterBtn"
+        android:title="Filter"
+        android:icon="@drawable/c_filter_btn"/>
+    <item android:id="@+id/doodleBtn"
+        android:title="Doodle"
+        android:icon="@drawable/c_doodle_btn"/>
+    <item android:id="@+id/adjustBtn"
+        android:title="Adjust"
+        android:icon="@drawable/c_adjust_btn"/>
+<!--    <item android:id="@+id/rotateBtn"-->
+<!--        android:title="Rotate"-->
+<!--        android:icon="@drawable/b_rotate_btn"/>-->
+
+</menu>

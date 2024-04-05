@@ -5,12 +5,12 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/detail_nav_top"
+        android:id="@+id/editor_nav_top"
         android:layout_width="match_parent"
         android:layout_height="58dp"
         android:layout_alignParentTop="true"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/detail_nav_top_menu"/>
+        app:menu="@menu/editor_nav_top_menu" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -20,11 +20,11 @@
         android:contentDescription="@string/todo" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/detail_nav_bot"
+        android:id="@+id/editor_nav_bot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/detail_nav_bot_menu" />
+        app:menu="@menu/editor_nav_bot_menu" />
 
 </RelativeLayout>

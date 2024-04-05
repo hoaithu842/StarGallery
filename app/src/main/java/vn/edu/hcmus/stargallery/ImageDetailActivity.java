@@ -1,9 +1,11 @@
 package vn.edu.hcmus.stargallery;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -15,6 +17,7 @@ import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
@@ -33,6 +36,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     float x1, x2;
     private float scaleFactor = 1.0f;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,12 +64,21 @@ public class ImageDetailActivity extends AppCompatActivity {
         });
 
         BottomNavigationView nav_top = findViewById(R.id.detail_nav_top);
+        Menu menu = nav_top.getMenu();
+        for (int i = 1; i < menu.size()-1; i++) {
+            MenuItem menuItem = menu.getItem(i);
+            menuItem.setEnabled(false);
+        }
         nav_top.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.backBtn) {
                     onBackBtnClick();
                 }
+                else if(item.getItemId() == R.id.infoBtn) {
+                    onInfoBtnClick();
+                }
+
                 return false;
             }
         });
@@ -86,11 +99,18 @@ public class ImageDetailActivity extends AppCompatActivity {
             }
         }
         // Swipe gestures
+
         imageView.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
             public void onSwipeLeft() {
                 showNextImage();
             }
+
+            @Override
+            public void onSwipeTop() {
+                showInfo();
+            }
+
             @Override
             public void onSwipeRight() {
                 showPreviousImage();
@@ -120,11 +140,29 @@ public class ImageDetailActivity extends AppCompatActivity {
             Toast.makeText(ImageDetailActivity.this, "No previous images", Toast.LENGTH_SHORT).show();
         }
     }
+    public void showInfo() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        View bottomSheet = getLayoutInflater().inflate(R.layout.info_bottom_sheet, null);
+        dialog.setContentView(bottomSheet);
+        if (!dialog.isShowing()) {
+            dialog.show();
+        } else {
+            dialog.dismiss();
+        }
+    }
     public void onBackBtnClick(){
         finish();
     }
-    public void onDetailBtnClick(View v) {
-        finish();
+    public void onInfoBtnClick(){
+        showInfo();
+//        BottomSheetDialog dialog = new BottomSheetDialog(this);
+//        View bottomSheet = getLayoutInflater().inflate(R.layout.info_bottom_sheet, null);
+//        dialog.setContentView(bottomSheet);
+//        if (!dialog.isShowing()) {
+//            dialog.show();
+//        } else {
+//            dialog.dismiss();
+//        }
     }
     public void onShareBtnClick() {
         if (images_list != null && currentIndex >= 0 && currentIndex < images_list.size()) {

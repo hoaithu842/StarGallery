@@ -14,21 +14,21 @@
         android:layout_width="0dp"
         android:icon="@drawable/_back_btn"/>
 
-        <item
-            android:layout_weight="1"
-            android:title=""/>
-        <item
-            android:layout_weight="1"
-            android:title=""/>
-        <item
-            android:layout_weight="1"
-            android:title=""/>
-
-    <item android:id="@+id/infoBtn"
+    <item
         android:layout_weight="1"
-        android:title=""
-        android:gravity="end"
-        android:layout_width="0dp"
-        android:icon="@drawable/b_info_btn"/>
+        android:title=""/>
+    <item
+        android:layout_weight="1"
+        android:title=""/>
+    <item
+        android:layout_weight="1"
+        android:title=""/>
+
+<!--    <item android:id="@+id/checkBtn"-->
+<!--        android:layout_weight="1"-->
+<!--        android:title=""-->
+<!--        android:gravity="end"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:icon="@drawable/d_check_btn"/>-->
 
 </menu>

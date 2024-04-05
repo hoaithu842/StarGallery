@@ -8,8 +8,8 @@
 <!--        android:icon="@drawable/ic_add" />-->
     <item android:id="@+id/show_photos"
         android:title="All photos"
-        android:icon="@drawable/library_icon"/>
+        android:icon="@drawable/a_library_icon"/>
     <item android:id="@+id/show_albums"
         android:title="Albums"
-        android:icon="@drawable/albums_icon"/>
+        android:icon="@drawable/a_albums_icon"/>
 </menu>

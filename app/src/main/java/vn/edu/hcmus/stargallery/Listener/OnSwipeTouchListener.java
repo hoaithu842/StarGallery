@@ -36,7 +36,7 @@ public abstract class OnSwipeTouchListener implements ImageView.OnTouchListener 
                         if (diffY > 0) {
                             onSwipeBottom();
                         } else {
-//                            onSwipeTop();
+                            onSwipeTop();
                         }
                         return true;
                     }
@@ -53,6 +53,6 @@ public abstract class OnSwipeTouchListener implements ImageView.OnTouchListener 
     public abstract void onSwipeRight();
 
     public abstract void onSwipeLeft();
-//    public abstract void onSwipeTop();
+    public abstract void onSwipeTop();
     public abstract void onSwipeBottom();
 }
