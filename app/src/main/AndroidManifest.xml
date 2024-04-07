@@ -41,7 +41,7 @@
         </activity>
 
         <activity
-            android:name=".ImageDetailActivity"
+            android:name=".Activity.ImageDetailActivity"
             android:screenOrientation="portrait">
         </activity>
 

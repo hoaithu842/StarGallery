@@ -22,9 +22,9 @@
       <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/adjust_nav_bot"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        app:labelVisibilityMode="unlabeled"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/adjust_nav_bot_menu" />
 
 </RelativeLayout>

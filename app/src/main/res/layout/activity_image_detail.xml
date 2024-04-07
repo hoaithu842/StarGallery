@@ -19,6 +19,7 @@
         android:layout_centerInParent="true"
         android:contentDescription="@string/todo" />
 
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/detail_nav_bot"
         android:layout_width="match_parent"
@@ -26,5 +27,14 @@
         android:layout_alignParentBottom="true"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/detail_nav_bot_menu" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/editor_nav_bot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/editor_nav_bot_menu" />
+
 
 </RelativeLayout>

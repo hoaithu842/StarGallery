@@ -1,4 +1,4 @@
-package vn.edu.hcmus.stargallery;
+package vn.edu.hcmus.stargallery.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,8 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import vn.edu.hcmus.stargallery.Fragment.ImagesFragment;
 import vn.edu.hcmus.stargallery.Listener.OnSwipeTouchListener;
+import vn.edu.hcmus.stargallery.R;
 
 public class ImageDetailActivity extends AppCompatActivity {
 
@@ -36,6 +37,9 @@ public class ImageDetailActivity extends AppCompatActivity {
     private ArrayList<String> images_list;
     String image_path = "";
     PopupWindow popupWindow;
+    BottomNavigationView nav_bot;
+    BottomNavigationView editor_nav_bot;
+    BottomNavigationView nav_top;
     float x1, x2;
     private float scaleFactor = 1.0f;
 
@@ -45,9 +49,12 @@ public class ImageDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
+        editor_nav_bot = findViewById(R.id.editor_nav_bot);
+        editor_nav_bot.setVisibility(View.INVISIBLE);
+
         imageView = findViewById(R.id.imageView);
 
-        BottomNavigationView nav_bot = findViewById(R.id.detail_nav_bot);
+        nav_bot = findViewById(R.id.detail_nav_bot);
         nav_bot.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -66,7 +73,7 @@ public class ImageDetailActivity extends AppCompatActivity {
             }
         });
 
-        BottomNavigationView nav_top = findViewById(R.id.detail_nav_top);
+        nav_top = findViewById(R.id.detail_nav_top);
         Menu menu = nav_top.getMenu();
         for (int i = 1; i < menu.size()-1; i++) {
             MenuItem menuItem = menu.getItem(i);
@@ -112,12 +119,10 @@ public class ImageDetailActivity extends AppCompatActivity {
             public void onSwipeLeft() {
                 showNextImage();
             }
-
             @Override
             public void onSwipeTop() throws IOException {
                 showInfo();
             }
-
             @Override
             public void onSwipeRight() {
                 showPreviousImage();
@@ -127,6 +132,17 @@ public class ImageDetailActivity extends AppCompatActivity {
             }
         });
     }
+//    @Override
+//    public void onBackPressed() {
+//        // Call your custom method to handle the back button press
+//        super.onBackPressed();
+//        if(editor_nav_bot.getVisibility() == View.VISIBLE){
+//            editor_nav_bot.setVisibility(View.INVISIBLE);
+//        } else finish();
+//
+//    }
+
+
     private void loadImage(String image_path) {
         Glide.with(this).load(image_path).into(imageView);
         this.image_path = image_path;
@@ -187,7 +203,9 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
     public void onBackBtnClick(){
-        finish();
+        if(editor_nav_bot.getVisibility() == View.VISIBLE){
+            editor_nav_bot.setVisibility(View.INVISIBLE);
+        } else finish();
     }
     public void onInfoBtnClick() throws IOException {
         showInfo();
@@ -213,7 +231,8 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
     public void onEditBtnClick() {
-        finish();
+        editor_nav_bot.setVisibility(View.VISIBLE);
+//        finish();
     }
     public void onFavoriteBtnClick() {
         finish();

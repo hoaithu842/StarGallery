@@ -7,12 +7,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,11 +18,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
-import vn.edu.hcmus.stargallery.ImageDetailActivity;
+import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.R;
 
 public class ImagesFragment extends Fragment {
