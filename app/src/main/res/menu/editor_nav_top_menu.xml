@@ -23,7 +23,9 @@
     <item
         android:layout_weight="1"
         android:title=""/>
-
+    <item
+        android:layout_weight="1"
+        android:title=""/>
 <!--    <item android:id="@+id/checkBtn"-->
 <!--        android:layout_weight="1"-->
 <!--        android:title=""-->

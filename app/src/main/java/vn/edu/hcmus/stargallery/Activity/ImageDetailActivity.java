@@ -49,8 +49,8 @@ public class ImageDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
-        editor_nav_bot = findViewById(R.id.editor_nav_bot);
-        editor_nav_bot.setVisibility(View.INVISIBLE);
+//        editor_nav_bot = findViewById(R.id.editor_nav_bot);
+//        editor_nav_bot.setVisibility(View.INVISIBLE);
 
         imageView = findViewById(R.id.imageView);
 
@@ -178,24 +178,57 @@ public class ImageDetailActivity extends AppCompatActivity {
         String imageISO = exifInterface.getAttribute(ExifInterface.TAG_ISO);
         String imageResolution = exifInterface.getAttribute(ExifInterface.TAG_RESOLUTION_UNIT);
 
-        Log.d("exif", imageDateTime);
-        Log.d("exif", imageMake);
-        Log.d("exif", imageModel);
-        Log.d("exif", imageFlash);
-        Log.d("exif", imageFocalLength);
-        Log.d("exif", imageLength);
-        Log.d("exif", imageWidth);
-        Log.d("exif", imageISO);
-        Log.d("exif", imageResolution);
+//        Log.d("exif", imageDateTime);
+//        Log.d("exif", imageMake);
+//        Log.d("exif", imageModel);
+//        Log.d("exif", imageFlash);
+//        Log.d("exif", imageFocalLength);
+//        Log.d("exif", imageLength);
+//        Log.d("exif", imageWidth);
+//        Log.d("exif", imageISO);
+//        Log.d("exif", imageResolution);
 
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         View bottomSheet = getLayoutInflater().inflate(R.layout.info_bottom_sheet, null);
         dialog.setContentView(bottomSheet);
         if (!dialog.isShowing()) {
             TextView txt;
+            LinearLayout l;
+            if(imageDateTime != null){
+                Log.d("exif", imageDateTime);
+                txt = bottomSheet.findViewById(R.id.image_date_taken);
+                txt.setText(imageDateTime);
+            } else {
+                l = bottomSheet.findViewById(R.id.img_date);
+                l.setVisibility(View.GONE);
+            }
+            if(imageModel != null && imageFocalLength != null){
+                Log.d("exif", imageModel);
+                Log.d("exif", imageFocalLength);
+            } else {
+                l = bottomSheet.findViewById(R.id.img_camera);
+                l.setVisibility(View.GONE);
+            }
+            if(imageModel != null && imageFocalLength != null){
+                Log.d("exif", imageModel);
+                Log.d("exif", imageFocalLength);
+                txt = bottomSheet.findViewById(R.id.phone_describe);
+                txt.setText(imageModel + " · " + imageFocalLength);
+            }
+            if(imageLength != null && imageWidth != null && imageISO != null){
+                Log.d("exif", imageLength);
+                Log.d("exif", imageWidth);
+                Log.d("exif", imageISO);
+                txt = bottomSheet.findViewById(R.id.img_resolution);
+                txt.setText(imageLength + " x " + imageWidth + " pixels · " + imageISO);
+            }
+            if(image_path != null){
+                Log.d("exif", image_path);
+                txt = bottomSheet.findViewById(R.id.img_storage);
+                txt.setText("image_path");
+            }
 
-            txt = bottomSheet.findViewById(R.id.image_date_taken);
-            txt.setText(imageDateTime);
+
 
             dialog.show();
         } else {
@@ -203,9 +236,10 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
     public void onBackBtnClick(){
-        if(editor_nav_bot.getVisibility() == View.VISIBLE){
-            editor_nav_bot.setVisibility(View.INVISIBLE);
-        } else finish();
+//        if(editor_nav_bot.getVisibility() == View.VISIBLE){
+//            editor_nav_bot.setVisibility(View.INVISIBLE);
+//        } else
+            finish();
     }
     public void onInfoBtnClick() throws IOException {
         showInfo();
@@ -231,7 +265,11 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
     public void onEditBtnClick() {
-        editor_nav_bot.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, ImageEditActivity.class);
+        intent.putExtra("image_path", image_path);
+//        intent.putStringArrayListExtra("images_list", images);
+        startActivity(intent);
+//        editor_nav_bot.setVisibility(View.VISIBLE);
 //        finish();
     }
     public void onFavoriteBtnClick() {

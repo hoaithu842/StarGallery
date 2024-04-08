@@ -45,6 +45,11 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".Activity.ImageEditActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

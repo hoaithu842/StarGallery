@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Slider.Dark" parent="Widget.MaterialComponents.Slider">
+        <item name="trackColorActive">#F0FFFF</item>
+        <item name="trackColorInactive">#191970</item>
+        <!-- Define other style attributes as needed -->
+    </style>
+    <style name="Slider.Light" parent="Widget.MaterialComponents.Slider">
+        <item name="trackColorActive">#191970</item>
+        <item name="trackColorInactive">#F0FFFF</item>
+        <!-- Define other style attributes as needed -->
+    </style>
+
+</resources>
