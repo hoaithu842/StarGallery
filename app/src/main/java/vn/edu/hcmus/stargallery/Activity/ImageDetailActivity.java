@@ -3,6 +3,7 @@ package vn.edu.hcmus.stargallery.Activity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -22,6 +23,8 @@ import androidx.core.content.FileProvider;
 import androidx.core.net.ParseException;
 
 import com.bumptech.glide.Glide;
+import com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity;
+import com.dsphotoeditor.sdk.utils.DsPhotoEditorConstants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
@@ -262,12 +265,29 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
     }
     public void onEditBtnClick() {
-        Intent intent = new Intent(this, ImageEditActivity.class);
-        intent.putExtra("image_path", image_path);
-//        intent.putStringArrayListExtra("images_list", images);
-        startActivity(intent);
-//        editor_nav_bot.setVisibility(View.VISIBLE);
-//        finish();
+//        Intent intent = new Intent(this, ImageEditActivity.class);
+//        intent.putExtra("image_path", image_path);
+//        startActivity(intent);
+        Intent dsPhotoEditorIntent = new Intent(this, DsPhotoEditorActivity.class);
+        dsPhotoEditorIntent.setData(Uri.fromFile(new File(image_path)));
+        dsPhotoEditorIntent.putExtra(DsPhotoEditorConstants.DS_PHOTO_EDITOR_OUTPUT_DIRECTORY, "");
+
+        dsPhotoEditorIntent.putExtra(DsPhotoEditorConstants.DS_TOOL_BAR_BACKGROUND_COLOR, Color.parseColor("#FF000000"));
+        dsPhotoEditorIntent.putExtra(DsPhotoEditorConstants.DS_MAIN_BACKGROUND_COLOR, Color.parseColor("#FF000000"));
+
+//        boolean isTrash = image.isTrash();
+//        boolean isHidden = image.isHidden();
+
+//        if (isTrash == true) {
+//            startActivityForResult(editIntent, EDIT_TRASH_IMAGE_REQUEST_CODE);
+//        } else if (isHidden == true) {
+//            startActivityForResult(editIntent, EDIT_HIDDEN_IMAGE_REQUEST_CODE);
+//        } else {
+        int EDIT_IMAGE_REQUEST_CODE = 69;
+            startActivityForResult(dsPhotoEditorIntent, EDIT_IMAGE_REQUEST_CODE);
+//        }
+
+
     }
     public void onFavoriteBtnClick() {
         finish();
