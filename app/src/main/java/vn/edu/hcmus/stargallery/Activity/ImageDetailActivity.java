@@ -3,6 +3,7 @@ package vn.edu.hcmus.stargallery.Activity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +12,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import java.util.Date;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.core.net.ParseException;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -177,7 +180,7 @@ public class ImageDetailActivity extends AppCompatActivity {
         String imageWidth = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
         String imageISO = exifInterface.getAttribute(ExifInterface.TAG_ISO);
         String imageResolution = exifInterface.getAttribute(ExifInterface.TAG_RESOLUTION_UNIT);
-
+//
 //        Log.d("exif", imageDateTime);
 //        Log.d("exif", imageMake);
 //        Log.d("exif", imageModel);
@@ -195,41 +198,35 @@ public class ImageDetailActivity extends AppCompatActivity {
             TextView txt;
             LinearLayout l;
             if(imageDateTime != null){
-                Log.d("exif", imageDateTime);
-                txt = bottomSheet.findViewById(R.id.image_date_taken);
-                txt.setText(imageDateTime);
-            } else {
-                l = bottomSheet.findViewById(R.id.img_date);
-                l.setVisibility(View.GONE);
+                try {
+                    // Create a SimpleDateFormat object with the desired format
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM dd, yyyy HH:mm");
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+                    Date inputDate = inputFormat.parse(imageDateTime);
+                    txt = bottomSheet.findViewById(R.id.image_date_taken);
+                    txt.setText(sdf.format(inputDate));
+                } catch (java.text.ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            if(imageModel != null && imageFocalLength != null){
-                Log.d("exif", imageModel);
-                Log.d("exif", imageFocalLength);
-            } else {
-                l = bottomSheet.findViewById(R.id.img_camera);
-                l.setVisibility(View.GONE);
-            }
-            if(imageModel != null && imageFocalLength != null){
-                Log.d("exif", imageModel);
-                Log.d("exif", imageFocalLength);
+            if(imageMake != null && imageModel != null && imageFocalLength != null && imageISO != null){
+                String[] iFL = imageFocalLength.split("/") ;
+                double ifl = (Double.parseDouble(iFL[0]) / Double.parseDouble(iFL[1]));
+                Log.d("exif", imageMake + " " + imageModel + " · " + ifl + "mm · " + imageISO + "ISO");
                 txt = bottomSheet.findViewById(R.id.phone_describe);
-                txt.setText(imageModel + " · " + imageFocalLength);
-            }
-            if(imageLength != null && imageWidth != null && imageISO != null){
-                Log.d("exif", imageLength);
-                Log.d("exif", imageWidth);
-                Log.d("exif", imageISO);
-                txt = bottomSheet.findViewById(R.id.img_resolution);
-                txt.setText(imageLength + " x " + imageWidth + " pixels · " + imageISO);
+                txt.setText(imageMake + " " + imageModel + " · " + ifl + "mm · " + imageISO + "ISO");
             }
             if(image_path != null){
+//                String[] img = image_path.split());
+                if(imageLength != null && imageWidth != null ){
+                    Log.d("exif", image_path.substring(0, image_path.lastIndexOf("/")) + "\n" + imageLength + " x " + imageWidth + " pixels");
+                    txt = bottomSheet.findViewById(R.id.img_resolution);
+                    txt.setText(image_path.substring(image_path.lastIndexOf("/") + 1) + "\n" + imageLength + " x " + imageWidth + " pixels" );
+                }
                 Log.d("exif", image_path);
                 txt = bottomSheet.findViewById(R.id.img_storage);
-                txt.setText("image_path");
+                txt.setText(image_path.substring(0, image_path.lastIndexOf("/")));
             }
-
-
-
             dialog.show();
         } else {
             dialog.dismiss();

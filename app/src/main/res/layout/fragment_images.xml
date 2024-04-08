@@ -5,11 +5,13 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/totalImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="2sp"
         android:gravity="center"
-        android:textSize="20dp"
-        android:layout_margin="10sp"
+        android:textSize="23dp"
+        android:layout_margin="1sp"
         android:text="Total o day"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/images_view"

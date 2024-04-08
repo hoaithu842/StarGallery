@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +42,8 @@ public class ImagesFragment extends Fragment {
         images=new ArrayList<>();
         adapter=new ImagesViewAdapter(getContext(),images);
         manager=new GridLayoutManager(getContext(),4);
+
+
         adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
@@ -82,6 +85,8 @@ public class ImagesFragment extends Fragment {
         imagesView.setAdapter(adapter);
         imagesView.setLayoutManager(manager);
         loadImages();
+        TextView txt = layout.findViewById(R.id.totalImage);
+        txt.setText("Total " + Integer.toString(images.size()) + " images");
         return layout;
     }
 
