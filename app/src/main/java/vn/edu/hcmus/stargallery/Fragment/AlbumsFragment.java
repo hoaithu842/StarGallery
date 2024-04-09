@@ -2,10 +2,12 @@ package vn.edu.hcmus.stargallery.Fragment;
 
 import static android.os.Environment.MEDIA_MOUNTED;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import vn.edu.hcmus.stargallery.Activity.AlbumDetailActivity;
+import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.Adapter.AlbumsViewAdapter;
+import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
 import vn.edu.hcmus.stargallery.R;
 
 public class AlbumsFragment extends Fragment {
@@ -40,15 +45,19 @@ public class AlbumsFragment extends Fragment {
         albums = new HashMap<>();
         adapter = new AlbumsViewAdapter(getContext(), albums);
         manager = new GridLayoutManager(getContext(),2);
-//        adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
-//            @Override
-//            public void onClick(int position) {
-//                Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-//                intent.putExtra("image_path", images.get(position));
-//                intent.putStringArrayListExtra("images_list", images);
-//                startActivity(intent);
-//            }
-//        });
+
+        adapter.setOnClickListener(new AlbumsViewAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position) {
+                String album_name = new ArrayList<>(albums.keySet()).get(position);
+                Log.d("ab_name", album_name);
+                Log.d("ab_", Integer.toString(albums.get(album_name).size()));
+                Intent intent = new Intent(getActivity(), AlbumDetailActivity.class);
+                intent.putExtra("album_name", album_name);
+                intent.putStringArrayListExtra("images_list", albums.get(album_name));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

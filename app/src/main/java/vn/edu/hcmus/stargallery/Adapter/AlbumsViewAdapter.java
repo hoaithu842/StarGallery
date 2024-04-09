@@ -24,6 +24,7 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
     private Context context;
     HashMap<String, ArrayList<String>> albums;
     ArrayList<String> albums_name;
+    private AlbumsViewAdapter.OnClickListener onClickListener;
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,14 +43,22 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
             Glide.with(context).load(album_cover).into(holder.album_cover);
         }
 
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (onClickListener != null) {
-//                    onClickListener.onClick(position);
-//                }
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onClickListener != null) {
+                    onClickListener.onClick(position);
+                }
+            }
+        });
+    }
+
+    public void setOnClickListener(AlbumsViewAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+    }
+
+    public interface OnClickListener {
+        void onClick(int position);
     }
 
     @Override
