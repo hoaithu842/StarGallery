@@ -2,6 +2,7 @@ package vn.edu.hcmus.stargallery.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import 	android.text.SpannableStringBuilder;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -51,7 +53,11 @@ public class AlbumDetailActivity extends AppCompatActivity {
             imagesView.setLayoutManager(manager);
 
             TextView total = findViewById(R.id.totalAlbumImage);
-            total.setText(album_name + "\n" + images.size() + " images");
+            SpannableStringBuilder s = new SpannableStringBuilder();
+            s.append(album_name);
+            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, album_name.length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s.append("\n").append(images.size() + " images");
+            total.setText(s);
         }
         backBtn = findViewById(R.id.album_detail_back_btn);
         backBtn.setOnClickListener(new View.OnClickListener() {

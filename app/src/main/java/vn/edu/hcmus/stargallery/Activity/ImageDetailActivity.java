@@ -14,6 +14,8 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -272,6 +274,7 @@ public class ImageDetailActivity extends AppCompatActivity {
         if (!dialog.isShowing()) {
             TextView txt;
             LinearLayout l;
+            SpannableStringBuilder s = new SpannableStringBuilder();
             if(imageDateTime != null){
                 try {
                     // Create a SimpleDateFormat object with the desired format
@@ -279,7 +282,11 @@ public class ImageDetailActivity extends AppCompatActivity {
                     SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
                     Date inputDate = inputFormat.parse(imageDateTime);
                     txt = bottomSheet.findViewById(R.id.image_date_taken);
-                    txt.setText(sdf.format(inputDate));
+                    s.append(sdf.format(inputDate));
+                    s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0,sdf.format(inputDate).length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    s.append("\n").append(imageLength + " x " + imageWidth + " pixels" );
+                    txt.setText(s);
+                    s.clear();
                 } catch (java.text.ParseException e) {
                     throw new RuntimeException(e);
                 }
@@ -289,18 +296,30 @@ public class ImageDetailActivity extends AppCompatActivity {
                 double ifl = (Double.parseDouble(iFL[0]) / Double.parseDouble(iFL[1]));
                 Log.d("exif", imageMake + " " + imageModel + " · " + ifl + "mm · " + imageISO + "ISO");
                 txt = bottomSheet.findViewById(R.id.phone_describe);
-                txt.setText(imageMake + " " + imageModel + " · " + ifl + "mm · " + imageISO + "ISO");
+                s.append(imageMake + " " + imageModel);
+                s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, (imageMake + " " + imageModel).length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+                s.append("\n").append(ifl + "mm · " + imageISO + "ISO");
+                txt.setText(s);
+                s.clear();
             }
             if(image_path != null){
 //                String[] img = image_path.split());
                 if(imageLength != null && imageWidth != null ){
                     Log.d("exif", image_path.substring(0, image_path.lastIndexOf("/")) + "\n" + imageLength + " x " + imageWidth + " pixels");
                     txt = bottomSheet.findViewById(R.id.img_resolution);
-                    txt.setText(image_path.substring(image_path.lastIndexOf("/") + 1) + "\n" + imageLength + " x " + imageWidth + " pixels" );
+                    s.append(image_path.substring(image_path.lastIndexOf("/") + 1));
+                    s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, image_path.substring(image_path.lastIndexOf("/") + 1).length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s.append("\n").append(imageLength + " x " + imageWidth + " pixels" );
+                    txt.setText(s);
+                    s.clear();
                 }
                 Log.d("exif", image_path);
                 txt = bottomSheet.findViewById(R.id.img_storage);
-                txt.setText(image_path.substring(0, image_path.lastIndexOf("/")));
+                s.append(image_path.substring(0, image_path.lastIndexOf("/")));
+                s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, image_path.substring(0, image_path.lastIndexOf("/")).length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                s.append("\n").append(imageLength + " x " + imageWidth + " pixels" );
+                txt.setText(s);
+                s.clear();
             }
             dialog.show();
         } else {
