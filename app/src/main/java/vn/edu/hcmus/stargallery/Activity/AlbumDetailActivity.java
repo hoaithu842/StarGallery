@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,8 @@ public class AlbumDetailActivity extends AppCompatActivity {
     AlbumDetailAdapter adapter;
     GridLayoutManager manager;
     RecyclerView imagesView;
+
+    ImageButton backBtn;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_detail);
@@ -47,9 +51,15 @@ public class AlbumDetailActivity extends AppCompatActivity {
             imagesView.setLayoutManager(manager);
 
             TextView total = findViewById(R.id.totalAlbumImage);
-            total.setText(album_name);
+            total.setText(album_name + "\n" + images.size() + " images");
         }
-
+        backBtn = findViewById(R.id.album_detail_back_btn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+                finish();
+           }
+        });
         adapter.setOnClickListener(new AlbumDetailAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {

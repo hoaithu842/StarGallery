@@ -3,14 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/detail_image_layout">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/detail_nav_top"
         android:layout_width="match_parent"
         android:layout_height="58dp"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/detail_nav_top_menu"/>
+        app:menu="@menu/detail_nav_top_menu"
+        app:itemHorizontalTranslationEnabled="false"/>
 
     <ImageView
         android:id="@+id/imageView"
@@ -18,7 +20,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:contentDescription="@string/todo"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/detail_nav_bot"

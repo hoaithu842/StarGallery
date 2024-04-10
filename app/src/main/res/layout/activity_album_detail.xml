@@ -4,15 +4,36 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/totalAlbumImage"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="2sp"
-        android:gravity="center"
-        android:textSize="23dp"
-        android:layout_margin="1sp"
-        android:text="Total o day"/>
+        android:layout_margin="10sp">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10sp"
+            android:id="@+id/album_detail_back_btn"
+            android:background="@drawable/_back_btn"/>
+        <TextView
+            android:id="@+id/totalAlbumImage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:padding="2sp"
+            android:textSize="20sp"
+            android:layout_margin="1sp"
+            android:text="Ten album \n So anh"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/a_add_album"/>
+
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/album_images_view"
         android:layout_width="match_parent"

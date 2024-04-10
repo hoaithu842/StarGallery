@@ -2,16 +2,19 @@ package vn.edu.hcmus.stargallery.Fragment;
 
 import static android.os.Environment.MEDIA_MOUNTED;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
@@ -26,9 +30,10 @@ import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.R;
 
 public class ImagesFragment extends Fragment {
+    private static final int REQUEST_DELETE_ITEM = 100;
     RecyclerView imagesView;
     LinearLayout layout;
-    static int PERMISSION_REQUEST_CODE=100;
+    static int PERMISSION_REQUEST_CODE = 100;
     ArrayList<String> images;
     ImagesViewAdapter adapter;
     GridLayoutManager manager;
@@ -50,11 +55,43 @@ public class ImagesFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
                 intent.putExtra("image_path", images.get(position));
                 intent.putStringArrayListExtra("images_list", images);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_DELETE_ITEM);
+
             }
         });
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_DELETE_ITEM && resultCode == Activity.RESULT_OK) {
+
+            Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
+            Log.d("DDFGH", images.get(itemDeleted));
+            if (itemDeleted >= 0 && itemDeleted < images.size()) {
+                // Handle item deletion
+                File delFile = new File(images.get(itemDeleted));
+                images.remove(images.get(itemDeleted));
+                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
+                if (delFile.exists()) {
+                    try {
+                        if (delFile.delete()) {
+                            TextView txt = layout.findViewById(R.id.totalImage);
+                            txt.setText("Total " + Integer.toString(images.size()) + " images");
+                            Toast.makeText(getContext(), "File deleted successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "File does not exist", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();

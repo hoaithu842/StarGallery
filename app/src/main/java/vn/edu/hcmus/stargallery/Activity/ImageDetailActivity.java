@@ -1,13 +1,19 @@
 package vn.edu.hcmus.stargallery.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,13 +47,21 @@ public class ImageDetailActivity extends AppCompatActivity {
     ImageView imageView;
     private int currentIndex;
     private ArrayList<String> images_list;
+    float rotateDegree = 0;
+
+    ArrayList<String> delete_images;
     String image_path = "";
+    Bitmap myImg;
+    boolean image_changed = false;
+    Matrix matrix = new Matrix();
     PopupWindow popupWindow;
     BottomNavigationView nav_bot;
     BottomNavigationView editor_nav_bot;
     BottomNavigationView nav_top;
     float x1, x2;
     private float scaleFactor = 1.0f;
+
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -59,8 +73,9 @@ public class ImageDetailActivity extends AppCompatActivity {
 //        editor_nav_bot.setVisibility(View.INVISIBLE);
 
         imageView = findViewById(R.id.imageView);
-
+        imageView.setRotation(0);
         nav_bot = findViewById(R.id.detail_nav_bot);
+
         nav_bot.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -69,6 +84,7 @@ public class ImageDetailActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.editBtn) {
                     onEditBtnClick();
                 } else if (item.getItemId() == R.id.favoriteBtn) {
+                    item.setIcon(R.drawable.b_heart_btn_filled);
                     onFavoriteBtnClick();
                 } else if (item.getItemId() == R.id.deleteBtn) {
                     onDeleteBtnClick();
@@ -116,14 +132,18 @@ public class ImageDetailActivity extends AppCompatActivity {
             currentIndex = images_list.indexOf(image_path);
             if (image_path != null) {
                 loadImage(image_path);
+                image_changed = false;
+                myImg = BitmapFactory.decodeFile(image_path);
+
             }
         }
         // Swipe gestures
-
-        imageView.setOnTouchListener(new OnSwipeTouchListener(this) {
+        LinearLayout ll = (LinearLayout)(findViewById(R.id.detail_image_layout));
+        ll.setOnTouchListener(new OnSwipeTouchListener(this) {
             @Override
             public void onSwipeLeft() {
                 showNextImage();
+                image_changed = true;
             }
             @Override
             public void onSwipeTop() throws IOException {
@@ -132,6 +152,7 @@ public class ImageDetailActivity extends AppCompatActivity {
             @Override
             public void onSwipeRight() {
                 showPreviousImage();
+                image_changed = true;
             }
             public void onSwipeBottom() {
                 finish();
@@ -152,6 +173,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     private void loadImage(String image_path) {
         Glide.with(this).load(image_path).into(imageView);
         this.image_path = image_path;
+
     }
     private void showNextImage() {
         if (currentIndex < images_list.size() - 1) {
@@ -183,7 +205,6 @@ public class ImageDetailActivity extends AppCompatActivity {
         String imageWidth = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
         String imageISO = exifInterface.getAttribute(ExifInterface.TAG_ISO);
         String imageResolution = exifInterface.getAttribute(ExifInterface.TAG_RESOLUTION_UNIT);
-//
 //        Log.d("exif", imageDateTime);
 //        Log.d("exif", imageMake);
 //        Log.d("exif", imageModel);
@@ -193,7 +214,6 @@ public class ImageDetailActivity extends AppCompatActivity {
 //        Log.d("exif", imageWidth);
 //        Log.d("exif", imageISO);
 //        Log.d("exif", imageResolution);
-
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         View bottomSheet = getLayoutInflater().inflate(R.layout.info_bottom_sheet, null);
         dialog.setContentView(bottomSheet);
@@ -290,7 +310,7 @@ public class ImageDetailActivity extends AppCompatActivity {
 
     }
     public void onFavoriteBtnClick() {
-        finish();
+//        finish();
     }
     public void onDeleteBtnClick() {
         final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(ImageDetailActivity.this);
@@ -301,7 +321,12 @@ public class ImageDetailActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
 //                Toast.makeText(getApplicationContext(), "H notify ne", Toast.LENGTH_SHORT).show();
 //                notifyImageDeleted(currentIndex); // Notify the fragment about image deletion
-//                new File(images_list.get(currentIndex)).delete();
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("itemDeleted", currentIndex);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+//                Toast.makeText(getApplicationContext(), "H notify ne", Toast.LENGTH_SHORT).show();
 //                images_list.remove(currentIndex);
 //                if (images_list.size() > currentIndex) {
 //                    loadImage(images_list.get(currentIndex));
@@ -321,6 +346,30 @@ public class ImageDetailActivity extends AppCompatActivity {
         confirmDialog.show();
     }
     public void onRotateBtnClick() {
-        finish();
+        if (imageView != null) {
+////            imageView.setRotation(imageView.getRotation() + 90);
+//            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+//            DisplayMetrics displayMetrics = new DisplayMetrics();
+//            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+//            int screenWidth = displayMetrics.widthPixels;
+//            int screenHeight = displayMetrics.heightPixels;
+//
+//// Set the new dimensions for the ImageView to fit the screen
+////            imageView.getLayoutParams().width = screenHeight;
+//            imageView.getLayoutParams().height = screenWidth;
+//            imageView.setRotation(imageView.getRotation() + 90);
+//            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            if(image_changed){
+                myImg = BitmapFactory.decodeFile(image_path);
+            }
+//            rotateDegree = (rotateDegree + 90) % 360;
+            matrix.postRotate(90);
+            Bitmap rotated = Bitmap.createBitmap(myImg, 0, 0, myImg.getWidth(), myImg.getHeight(), matrix, true);
+            imageView.setImageBitmap(rotated);
+//            imageView.setImageMatrix(matrix);
+        }
+
+//        finish();
     }
 }
