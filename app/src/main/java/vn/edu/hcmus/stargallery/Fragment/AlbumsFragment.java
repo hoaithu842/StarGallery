@@ -2,6 +2,7 @@ package vn.edu.hcmus.stargallery.Fragment;
 
 import static android.os.Environment.MEDIA_MOUNTED;
 
+import android.app.Application;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -26,6 +27,8 @@ import vn.edu.hcmus.stargallery.Activity.AlbumDetailActivity;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.Adapter.AlbumsViewAdapter;
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
+import vn.edu.hcmus.stargallery.Helper.DatabaseHelper;
+import vn.edu.hcmus.stargallery.MainActivity;
 import vn.edu.hcmus.stargallery.R;
 
 public class AlbumsFragment extends Fragment {
@@ -125,8 +128,15 @@ public class AlbumsFragment extends Fragment {
                         imagesList.add(imagePath);
                     }
                 }
-//                cursor.close();
-//            }
+        }
+        Log.d("Empty", "Tu local " + Integer.toString(albums.size()));
+        DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
+        ArrayList<String> imagesList = dbHelper.getFavoriteImages();
+        if (imagesList.isEmpty()) {
+            albumsView.getAdapter().notifyDataSetChanged();
+        } else {
+            albums.put("Favorites", imagesList);
+            Log.d("Empty", "Sau khi doc DB " + Integer.toString(albums.size()));
             albumsView.getAdapter().notifyDataSetChanged();
         }
     }

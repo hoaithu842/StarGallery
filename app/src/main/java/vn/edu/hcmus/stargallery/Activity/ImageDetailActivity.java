@@ -60,6 +60,7 @@ import ly.img.android.pesdk.ui.model.state.UiConfigFrame;
 import ly.img.android.pesdk.ui.model.state.UiConfigOverlay;
 import ly.img.android.pesdk.ui.model.state.UiConfigSticker;
 import ly.img.android.pesdk.ui.model.state.UiConfigText;
+import vn.edu.hcmus.stargallery.Helper.DatabaseHelper;
 import vn.edu.hcmus.stargallery.Listener.OnSwipeTouchListener;
 import vn.edu.hcmus.stargallery.R;
 
@@ -83,6 +84,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     private float scaleFactor = 1.0f;
     public static int PESDK_RESULT = 1;
     public static int GALLERY_RESULT = 2;
+    DatabaseHelper dbHelper;
 
     private SettingsList createPesdkSettingsList() {
 
@@ -124,11 +126,12 @@ public class ImageDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
+        dbHelper = new DatabaseHelper(this.getApplication());
+
 //        editor_nav_bot = findViewById(R.id.editor_nav_bot);
 //        editor_nav_bot.setVisibility(View.INVISIBLE);
 
         imageView = findViewById(R.id.imageView);
-
         nav_bot = findViewById(R.id.detail_nav_bot);
         nav_bot.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -138,8 +141,7 @@ public class ImageDetailActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.editBtn) {
                     onEditBtnClick();
                 } else if (item.getItemId() == R.id.favoriteBtn) {
-                    item.setIcon(R.drawable.b_heart_btn_filled);
-//                    onFavoriteBtnClick();
+                    onFavoriteBtnClick(item);
                 } else if (item.getItemId() == R.id.deleteBtn) {
                     onDeleteBtnClick();
                 } else if (item.getItemId() == R.id.rotateBtn) {
@@ -221,15 +223,25 @@ public class ImageDetailActivity extends AppCompatActivity {
 //        } else finish();
 //
 //    }
+    private void updateFavImgIcon() {
+        MenuItem favoriteMenuItem = nav_bot.getMenu().findItem(R.id.favoriteBtn);
+        if (dbHelper.favoriteContainsImage(image_path)) {
+            favoriteMenuItem.setIcon(R.drawable.b_heart_btn_filled);
+        } else {
+            favoriteMenuItem.setIcon(R.drawable.b_heart_btn);
+        }
+    }
 
 
     private void loadImage(String image_path) {
-        Glide.with(this).load(image_path).into(imageView);
         this.image_path = image_path;
+        updateFavImgIcon();
+        Glide.with(this).load(image_path).into(imageView);
     }
     private void showNextImage() {
         if (currentIndex < images_list.size() - 1) {
             currentIndex++;
+//            updateFavImgIcon();
             loadImage(images_list.get(currentIndex));
         } else {
             Toast.makeText(ImageDetailActivity.this, "No more images", Toast.LENGTH_SHORT).show();
@@ -238,6 +250,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     private void showPreviousImage() {
         if (currentIndex > 0) {
             currentIndex--;
+//            updateFavImgIcon();
             loadImage(images_list.get(currentIndex));
         } else {
             Toast.makeText(ImageDetailActivity.this, "No previous images", Toast.LENGTH_SHORT).show();
@@ -372,8 +385,16 @@ public class ImageDetailActivity extends AppCompatActivity {
                 .setSettingsList(settingsList)
                 .startActivityForResult(this, PESDK_RESULT);
     }
-    public void onFavoriteBtnClick() {
-        finish();
+    public void onFavoriteBtnClick(MenuItem item) {
+        if (dbHelper.favoriteContainsImage(image_path)) {
+            // remove from favorite
+            item.setIcon(R.drawable.b_heart_btn);
+            dbHelper.removeImageFromFavorite(image_path);
+        } else {
+            // add to favorite
+            item.setIcon(R.drawable.b_heart_btn_filled);
+            dbHelper.insertFavoriteImage(image_path);
+        }
     }
     public void onDeleteBtnClick() {
         final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(ImageDetailActivity.this);

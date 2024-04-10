@@ -50,11 +50,6 @@
         </activity>
 
         <activity
-            android:name=".Activity.ImageEditActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
             android:name=".Activity.AlbumDetailActivity"
             android:screenOrientation="portrait">
         </activity>
