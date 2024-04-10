@@ -67,32 +67,33 @@ public class AlbumsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         albums.clear();
-        boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
-        if (SDCard) {
-            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
-            final String order = MediaStore.Images.Media.DATE_TAKEN + " DESC";
-            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, order);
-//            if (cursor != null) {
-            while (cursor.moveToNext()) {
-                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                int bucketIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
-
-                String imagePath = cursor.getString(columnIndex);
-                String albumName = cursor.getString(bucketIndex);
-
-                if (!albums.containsKey(albumName)) {
-                    ArrayList<String> imagesList = new ArrayList<>();
-                    imagesList.add(imagePath);
-                    albums.put(albumName, imagesList);
-                } else {
-                    ArrayList<String> imagesList = albums.get(albumName);
-                    imagesList.add(imagePath);
-                }
-            }
-//                cursor.close();
+        loadAlbums();
+//        boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
+//        if (SDCard) {
+//            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
+//            final String order = MediaStore.Images.Media.DATE_TAKEN + " DESC";
+//            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, order);
+////            if (cursor != null) {
+//            while (cursor.moveToNext()) {
+//                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+//                int bucketIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+//
+//                String imagePath = cursor.getString(columnIndex);
+//                String albumName = cursor.getString(bucketIndex);
+//
+//                if (!albums.containsKey(albumName)) {
+//                    ArrayList<String> imagesList = new ArrayList<>();
+//                    imagesList.add(imagePath);
+//                    albums.put(albumName, imagesList);
+//                } else {
+//                    ArrayList<String> imagesList = albums.get(albumName);
+//                    imagesList.add(imagePath);
+//                }
 //            }
-            albumsView.getAdapter().notifyDataSetChanged();
-        }
+////                cursor.close();
+////            }
+//            albumsView.getAdapter().notifyDataSetChanged();
+//        }
     }
 
     @Nullable
@@ -138,6 +139,7 @@ public class AlbumsFragment extends Fragment {
             albums.put("Favorites", imagesList);
             Log.d("Empty", "Sau khi doc DB " + Integer.toString(albums.size()));
             albumsView.getAdapter().notifyDataSetChanged();
+
         }
     }
 }

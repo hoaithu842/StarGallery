@@ -2,6 +2,7 @@ package vn.edu.hcmus.stargallery.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
@@ -404,13 +406,10 @@ public class ImageDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-//                Intent resultIntent = new Intent();
-//                resultIntent.putExtra("itemDeleted", currentIndex);
-//                setResult(Activity.RESULT_OK, resultIntent);
-//                finish();Intent resultIntent = new Intent();
-//                resultIntent.putExtra("itemDeleted", currentIndex);
-//                setResult(Activity.RESULT_OK, resultIntent);
-//                finish();
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("itemDeleted", currentIndex);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
 //                Toast.makeText(getApplicationContext(), "H notify ne", Toast.LENGTH_SHORT).show();
 //                notifyImageDeleted(currentIndex); // Notify the fragment about image deletion
 //                new File(images_list.get(currentIndex)).delete();

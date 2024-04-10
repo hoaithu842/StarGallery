@@ -3,8 +3,12 @@ package vn.edu.hcmus.stargallery.Fragment;
 import static android.os.Environment.MEDIA_MOUNTED;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -67,28 +71,53 @@ public class ImagesFragment extends Fragment {
         if (requestCode == REQUEST_DELETE_ITEM && resultCode == Activity.RESULT_OK) {
 
             Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
-            Log.d("DDFGH", images.get(itemDeleted));
             if (itemDeleted >= 0 && itemDeleted < images.size()) {
                 // Handle item deletion
-                File delFile = new File(images.get(itemDeleted));
-                images.remove(images.get(itemDeleted));
-                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
-                if (delFile.exists()) {
-                    try {
-                        if (delFile.delete()) {
-                            TextView txt = layout.findViewById(R.id.totalImage);
-                            txt.setText("Total " + Integer.toString(images.size()) + " images");
-                            Toast.makeText(getContext(), "File deleted successfully", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
-                    }
+                Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                String selection = MediaStore.Images.Media.DATA + "=?";
+                String[] selectionArgs = new String[]{ images.get(itemDeleted) };
+                Cursor cursor = getContext().getContentResolver().query(imageUri, null, selection, selectionArgs, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    int uriIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                    long imageId = cursor.getLong(uriIndex);
+                    imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId);
+                    cursor.close();
                 } else {
-                    Toast.makeText(getContext(), "File does not exist", Toast.LENGTH_SHORT).show();
+                    // Handle case when the image is not found in MediaStore
+                    Toast.makeText(getContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
                 }
+//                File delFile = new File(images.get(itemDeleted));
+//                images.remove(images.get(itemDeleted));
+//                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
+//                if (delFile.exists()) {
+//                    try {
+////                        ContentResolver resolver = requireContext().getContentResolver();
+////                        Uri imageUri = Uri.fromFile(delFile);
+////                        String selection = null;  // No conditions to select specific items.
+////                        String[] selectionArgs = null;  // No arguments needed.
+////                        int numImagesRemoved = resolver.delete(imageUri, selection, selectionArgs);
+//                        getContext().getContentResolver().delete(
+//                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                                MediaStore.Images.Media.DATA + "=?",
+//                                new String[]{
+//                                        delFile.getAbsolutePath()
+//                                });
+//                        getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + delFile)));
+//                        if (delFile.delete()) {
+//                            TextView txt = layout.findViewById(R.id.totalImage);
+//                            txt.setText("Total " + Integer.toString(images.size()) + " images");
+//                            Toast.makeText(getContext(), "File deleted successfully", Toast.LENGTH_SHORT).show();
+//                        } else {
+//
+//                            Toast.makeText(getContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } catch (SecurityException e) {
+//                        e.printStackTrace();
+//                        Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    Toast.makeText(getContext(), "File does not exist", Toast.LENGTH_SHORT).show();
+//                }
             }
         }
     }
@@ -141,5 +170,26 @@ public class ImagesFragment extends Fragment {
             }
             imagesView.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    public Boolean deleteFile(Context context, Uri uri) {
+        File file = new File(uri.getPath());
+        String [] selectionArgs = {(file.getAbsolutePath())};
+        ContentResolver contentResolver = context.getContentResolver();
+        String where = null;
+        Uri filesUri = null;
+        if (android.os.Build.VERSION.SDK_INT >= 29) {
+            filesUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            where = MediaStore.Images.Media._ID + "=?";
+            selectionArgs = new String[] {(file.getName())};
+        } else {
+            where = MediaStore.MediaColumns.DATA + "=?";
+            filesUri = MediaStore.Files.getContentUri("external");
+        }
+
+        int result =  contentResolver.delete(filesUri, where, selectionArgs);
+
+        return file.exists();
+
     }
 }
