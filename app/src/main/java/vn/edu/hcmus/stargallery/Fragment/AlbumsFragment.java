@@ -34,7 +34,7 @@ import vn.edu.hcmus.stargallery.R;
 public class AlbumsFragment extends Fragment {
     RecyclerView albumsView;
     LinearLayout layout;
-    static int PERMISSION_REQUEST_CODE=100;
+    static int PERMISSION_REQUEST_CODE = 100;
     HashMap<String, ArrayList<String>> albums;
     AlbumsViewAdapter adapter;
     GridLayoutManager manager;
@@ -68,32 +68,6 @@ public class AlbumsFragment extends Fragment {
         super.onResume();
         albums.clear();
         loadAlbums();
-//        boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
-//        if (SDCard) {
-//            final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
-//            final String order = MediaStore.Images.Media.DATE_TAKEN + " DESC";
-//            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, order);
-////            if (cursor != null) {
-//            while (cursor.moveToNext()) {
-//                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-//                int bucketIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
-//
-//                String imagePath = cursor.getString(columnIndex);
-//                String albumName = cursor.getString(bucketIndex);
-//
-//                if (!albums.containsKey(albumName)) {
-//                    ArrayList<String> imagesList = new ArrayList<>();
-//                    imagesList.add(imagePath);
-//                    albums.put(albumName, imagesList);
-//                } else {
-//                    ArrayList<String> imagesList = albums.get(albumName);
-//                    imagesList.add(imagePath);
-//                }
-//            }
-////                cursor.close();
-////            }
-//            albumsView.getAdapter().notifyDataSetChanged();
-//        }
     }
 
     @Nullable
@@ -106,6 +80,7 @@ public class AlbumsFragment extends Fragment {
         loadAlbums();
         return layout;
     }
+
     private void loadAlbums() {
         boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
         if (SDCard) {
@@ -130,16 +105,13 @@ public class AlbumsFragment extends Fragment {
                     }
                 }
         }
-        Log.d("Empty", "Tu local " + Integer.toString(albums.size()));
         DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
         ArrayList<String> imagesList = dbHelper.getFavoriteImages();
         if (imagesList.isEmpty()) {
             albumsView.getAdapter().notifyDataSetChanged();
         } else {
             albums.put("Favorites", imagesList);
-            Log.d("Empty", "Sau khi doc DB " + Integer.toString(albums.size()));
             albumsView.getAdapter().notifyDataSetChanged();
-
         }
     }
 }

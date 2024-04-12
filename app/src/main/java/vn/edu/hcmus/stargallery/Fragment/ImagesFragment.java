@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
@@ -48,19 +49,18 @@ public class ImagesFragment extends Fragment {
         shouldExecuteOnResume = false;
         super.onCreate(savedInstanceState);
 
-        images=new ArrayList<>();
-        adapter=new ImagesViewAdapter(getContext(),images);
-        manager=new GridLayoutManager(getContext(),4);
-
+        images = new ArrayList<>();
+        adapter = new ImagesViewAdapter(getContext(),images);
+        manager = new GridLayoutManager(getContext(),4);
 
         adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
+                Log.d("GIF", images.get(position));
                 Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
                 intent.putExtra("image_path", images.get(position));
                 intent.putStringArrayListExtra("images_list", images);
                 startActivityForResult(intent, REQUEST_DELETE_ITEM);
-
             }
         });
     }
@@ -86,53 +86,21 @@ public class ImagesFragment extends Fragment {
                     // Handle case when the image is not found in MediaStore
                     Toast.makeText(getContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
                 }
-//                File delFile = new File(images.get(itemDeleted));
-//                images.remove(images.get(itemDeleted));
-//                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
-//                if (delFile.exists()) {
-//                    try {
-////                        ContentResolver resolver = requireContext().getContentResolver();
-////                        Uri imageUri = Uri.fromFile(delFile);
-////                        String selection = null;  // No conditions to select specific items.
-////                        String[] selectionArgs = null;  // No arguments needed.
-////                        int numImagesRemoved = resolver.delete(imageUri, selection, selectionArgs);
-//                        getContext().getContentResolver().delete(
-//                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                                MediaStore.Images.Media.DATA + "=?",
-//                                new String[]{
-//                                        delFile.getAbsolutePath()
-//                                });
-//                        getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + delFile)));
-//                        if (delFile.delete()) {
-//                            TextView txt = layout.findViewById(R.id.totalImage);
-//                            txt.setText("Total " + Integer.toString(images.size()) + " images");
-//                            Toast.makeText(getContext(), "File deleted successfully", Toast.LENGTH_SHORT).show();
-//                        } else {
-//
-//                            Toast.makeText(getContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } catch (SecurityException e) {
-//                        e.printStackTrace();
-//                        Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
-//                    }
-//                } else {
-//                    Toast.makeText(getContext(), "File does not exist", Toast.LENGTH_SHORT).show();
-//                }
             }
         }
     }
     @Override
     public void onResume() {
         super.onResume();
-        boolean SDCard= Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
+        boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
         if(SDCard){
-            final String[] colums={MediaStore.Images.Media.DATA,MediaStore.Images.Media._ID};
-            final String order=MediaStore.Images.Media.DATE_TAKEN+" DESC";
-            Cursor cursor=getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,colums,null,null,order);
-            int count =cursor.getCount();
-            for(int i=0;i<count;i++){
+            final String[] colums = {MediaStore.Images.Media.DATA,MediaStore.Images.Media._ID};
+            final String order = MediaStore.Images.Media.DATE_TAKEN+" DESC";
+            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,colums,null,null,order);
+            int count = cursor.getCount();
+            for(int i=0; i<count; i++){
                 cursor.moveToPosition(i);
-                int colunmindex=cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                int colunmindex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 if (!images.contains(cursor.getString(colunmindex))) {
                     images.add(0, cursor.getString(colunmindex));
                 } else {
@@ -159,13 +127,13 @@ public class ImagesFragment extends Fragment {
     private void loadImages() {
         boolean SDCard= Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
         if(SDCard){
-            final String[] colums={MediaStore.Images.Media.DATA,MediaStore.Images.Media._ID};
-            final String order=MediaStore.Images.Media.DATE_TAKEN+" DESC";
-            Cursor cursor=getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,colums,null,null,order);
-            int count =cursor.getCount();
-            for(int i=0;i<count;i++){
+            final String[] colums = {MediaStore.Images.Media.DATA,MediaStore.Images.Media._ID};
+            final String order = MediaStore.Images.Media.DATE_TAKEN+" DESC";
+            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,colums,null,null,order);
+            int count = cursor.getCount();
+            for(int i=0; i<count; i++){
                 cursor.moveToPosition(i);
-                int colunmindex=cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                int colunmindex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 images.add(cursor.getString(colunmindex));
             }
             imagesView.getAdapter().notifyDataSetChanged();
@@ -186,10 +154,7 @@ public class ImagesFragment extends Fragment {
             where = MediaStore.MediaColumns.DATA + "=?";
             filesUri = MediaStore.Files.getContentUri("external");
         }
-
         int result =  contentResolver.delete(filesUri, where, selectionArgs);
-
         return file.exists();
-
     }
 }
