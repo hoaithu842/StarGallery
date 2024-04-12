@@ -7,8 +7,6 @@
     <!--    <item android:id="@+id/action_settings"-->
     <!--        android:title="@string/menu_settings"-->
     <!--        android:icon="@drawable/ic_add" />-->
-
-
     <item android:id="@+id/backBtn"
         android:layout_weight="1"
         android:title=""
@@ -22,13 +20,9 @@
     <item
         android:layout_weight="1"
         android:title=""/>
-
-    <item android:id="@+id/canecleBtn"
+    <item
         android:layout_weight="1"
-        android:title=""
-        android:gravity="start"
-        android:layout_width="0dp"
-        android:icon="@drawable/d_cancel_btn"/>
+        android:title=""/>
 
     <item android:id="@+id/checkBtn"
         android:layout_weight="1"

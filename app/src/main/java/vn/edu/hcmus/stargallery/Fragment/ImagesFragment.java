@@ -72,43 +72,32 @@ public class ImagesFragment extends Fragment {
 
             Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
             if (itemDeleted >= 0 && itemDeleted < images.size()) {
+                String imagePath = images.get(itemDeleted);
+                images.remove(images.get(itemDeleted));
+                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
                 // Handle item deletion
-                Uri imageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                String selection = MediaStore.Images.Media.DATA + "=?";
-                String[] selectionArgs = new String[]{ images.get(itemDeleted) };
-                Cursor cursor = getContext().getContentResolver().query(imageUri, null, selection, selectionArgs, null);
-                if (cursor != null && cursor.moveToFirst()) {
-                    int uriIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-                    long imageId = cursor.getLong(uriIndex);
-                    imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId);
-                    cursor.close();
+                // Check if the image path exists before deletion (avoid potential errors)
+                if (new File(imagePath).exists()) {
+                    int deleted = getContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
+                    if (deleted == 1) {
+                        // Image deleted successfully
+                        Log.i("ImageDelete", "Image deleted: " + imagePath);
+                    } else {
+                        Log.w("ImageDelete", "Failed to delete image: " + imagePath);
+                    }
                 } else {
-                    // Handle case when the image is not found in MediaStore
-                    Toast.makeText(getContext(), "Failed to delete file", Toast.LENGTH_SHORT).show();
+                    Log.w("ImageDelete", "Image path not found: " + imagePath);
                 }
             }
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
-        if(SDCard){
-            final String[] colums = {MediaStore.Images.Media.DATA,MediaStore.Images.Media._ID};
-            final String order = MediaStore.Images.Media.DATE_TAKEN+" DESC";
-            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,colums,null,null,order);
-            int count = cursor.getCount();
-            for(int i=0; i<count; i++){
-                cursor.moveToPosition(i);
-                int colunmindex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                if (!images.contains(cursor.getString(colunmindex))) {
-                    images.add(0, cursor.getString(colunmindex));
-                } else {
-                    imagesView.getAdapter().notifyDataSetChanged();
-                    return;
-                }
-            }
-        }
+        images.clear();
+        loadImages();
     }
 
     @Nullable
@@ -125,13 +114,13 @@ public class ImagesFragment extends Fragment {
     }
 
     private void loadImages() {
-        boolean SDCard= Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
-        if(SDCard){
-            final String[] colums = {MediaStore.Images.Media.DATA,MediaStore.Images.Media._ID};
-            final String order = MediaStore.Images.Media.DATE_TAKEN+" DESC";
-            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,colums,null,null,order);
+        boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
+        if (SDCard) {
+            final String[] colums = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
+            final String order = MediaStore.Images.Media.DATE_TAKEN + " DESC";
+            Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, colums, null, null, order);
             int count = cursor.getCount();
-            for(int i=0; i<count; i++){
+            for (int i = 0; i < count; i++) {
                 cursor.moveToPosition(i);
                 int colunmindex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 images.add(cursor.getString(colunmindex));

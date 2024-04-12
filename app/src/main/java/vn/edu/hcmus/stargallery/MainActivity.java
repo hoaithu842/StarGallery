@@ -2,25 +2,25 @@ package vn.edu.hcmus.stargallery;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
+import android.view.MenuItem;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.MenuItem;
 import android.webkit.MimeTypeMap;
-import android.widget.Toast;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
 import java.util.ArrayList;
 
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements QRHelper.QRScanLi
     ImagesFragment imagesFragment;
     static int PERMISSION_REQUEST_CODE=100;
     QRHelper qrHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,16 +51,13 @@ public class MainActivity extends AppCompatActivity implements QRHelper.QRScanLi
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.show_photos) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, imagesFragment).commit();
+                    return true;
                 } else if (item.getItemId() == R.id.show_albums){
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, albumsFragment).commit();
-                } else {
+                    return true;
+                } else if (item.getItemId() == R.id.scan_qr){
                     qrHelper.scanQRCode();
-//                    ArrayList<String> list = new ArrayList<>();
-//                    list.add("/storage/emulated/0/DCIM/Camera/PXL_20240409_024304167.jpg");
-//                    list.add("/storage/emulated/0/DCIM/Camera/PXL_20240403_120504867.jpg");
-//                    list.add("/storage/emulated/0/DCIM/Camera/PXL_20240328_104917260.jpg");
-////                    list.add("/storage/emulated/0/Pictures/Screenshots/Screenshot_20240319-010738.png");
-//                    gifHelper.createGif(list);
+                    return true;
                 }
                 return false;
             }
@@ -73,25 +69,33 @@ public class MainActivity extends AppCompatActivity implements QRHelper.QRScanLi
         qrHelper.handleScanResult(requestCode, resultCode, data);
     }
     private void checkPermissions() {
+        var context = getApplicationContext();
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+            var intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+            startActivityForResult(intent, 2296);
+        }
+
         int result1 = ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE);
         int result2 = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
-        if(result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED){
+        if (result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, imagesFragment).commit();
-        }else{
-            ActivityCompat.requestPermissions(this,new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(grantResults.length > 0){
-            boolean accepted=grantResults[0]==PackageManager.PERMISSION_GRANTED;
-            if(accepted){
+        if (grantResults.length > 0) {
+            boolean accepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            if (accepted) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, imagesFragment).commit();
-            }else{
-                Toast.makeText(this,"You have denied the permission",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "You have denied the permission", Toast.LENGTH_LONG).show();
             }
-        }else{
+        } else {
 
         }
     }

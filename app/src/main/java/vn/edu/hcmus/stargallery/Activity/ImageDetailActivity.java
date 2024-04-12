@@ -13,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.icu.text.SimpleDateFormat;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -67,7 +68,6 @@ import vn.edu.hcmus.stargallery.Listener.OnSwipeTouchListener;
 import vn.edu.hcmus.stargallery.R;
 
 public class ImageDetailActivity extends AppCompatActivity {
-
     ImageView imageView;
     private int currentIndex;
     private ArrayList<String> images_list;
@@ -89,35 +89,27 @@ public class ImageDetailActivity extends AppCompatActivity {
     DatabaseHelper dbHelper;
 
     private SettingsList createPesdkSettingsList() {
-
         // Create a empty new SettingsList and apply the changes on this reference.
         PhotoEditorSettingsList settingsList = new PhotoEditorSettingsList(true);
-
         // If you include our asset Packs and you use our UI you also need to add them to the UI Config,
         // otherwise they are only available for the backend
         // See the specific feature sections of our guides if you want to know how to add your own Assets.
-
         settingsList.getSettingsModel(UiConfigFilter.class).setFilterList(
                 FilterPackBasic.getFilterPack()
         );
-
         settingsList.getSettingsModel(UiConfigText.class).setFontList(
                 FontPackBasic.getFontPack()
         );
-
         settingsList.getSettingsModel(UiConfigFrame.class).setFrameList(
                 FramePackBasic.getFramePack()
         );
-
         settingsList.getSettingsModel(UiConfigOverlay.class).setOverlayList(
                 OverlayPackBasic.getOverlayPack()
         );
-
         settingsList.getSettingsModel(UiConfigSticker.class).setStickerLists(
                 StickerPackEmoticons.getStickerCategory(),
                 StickerPackShapes.getStickerCategory()
         );
-
         return settingsList;
     }
 
@@ -140,30 +132,39 @@ public class ImageDetailActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.shareBtn) {
                     onShareBtnClick();
+                    return true;
                 } else if (item.getItemId() == R.id.editBtn) {
                     onEditBtnClick();
+                    return true;
                 } else if (item.getItemId() == R.id.favoriteBtn) {
                     onFavoriteBtnClick(item);
+                    return true;
                 } else if (item.getItemId() == R.id.deleteBtn) {
                     onDeleteBtnClick();
+                    return true;
                 } else if (item.getItemId() == R.id.rotateBtn) {
                     onRotateBtnClick();
+                    return true;
                 }
                 return false;
             }
         });
-
+//        nav_bot.setSelectedItemId(R.id.favoriteBtn);
         nav_top = findViewById(R.id.detail_nav_top);
         Menu menu = nav_top.getMenu();
+        MenuItem menuItem;
         for (int i = 1; i < menu.size()-1; i++) {
-            MenuItem menuItem = menu.getItem(i);
+            menuItem = menu.getItem(i);
             menuItem.setEnabled(false);
         }
+
+
         nav_top.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.backBtn) {
                     onBackBtnClick();
+                    return true;
                 }
                 else if(item.getItemId() == R.id.infoBtn) {
                     try {
@@ -171,6 +172,7 @@ public class ImageDetailActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                    return true;
                 }
 
                 return false;
@@ -201,6 +203,7 @@ public class ImageDetailActivity extends AppCompatActivity {
             public void onSwipeLeft() {
                 image_changed = true;
                 showNextImage();
+//                nav_bot.setSelectedItemId(R.id.favoriteBtn);
             }
             @Override
             public void onSwipeTop() throws IOException {
@@ -210,6 +213,7 @@ public class ImageDetailActivity extends AppCompatActivity {
             public void onSwipeRight() {
                 image_changed = true;
                 showPreviousImage();
+//                nav_bot.setSelectedItemId(R.id.favoriteBtn);
             }
             public void onSwipeBottom() {
                 finish();
@@ -406,9 +410,26 @@ public class ImageDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("itemDeleted", currentIndex);
-                setResult(Activity.RESULT_OK, resultIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    int deleted = getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            MediaStore.Images.Media.DATA + " = ?", new String[]{image_path});
+                    Toast.makeText(ImageDetailActivity.this, "Deleted " + deleted + " image", Toast.LENGTH_SHORT).show();
+                } else {
+                    File file = new File(image_path);
+                    if (file.exists()) {
+                        if (file.delete()) {
+                            Toast.makeText(ImageDetailActivity.this, "Deleted image", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ImageDetailActivity.this, "Failed to delete image", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(ImageDetailActivity.this, "Image not found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                Intent intent = new Intent();
+                intent.putExtra("itemDeleted", currentIndex);
+                setResult(Activity.RESULT_OK, intent);
                 finish();
 //                Toast.makeText(getApplicationContext(), "H notify ne", Toast.LENGTH_SHORT).show();
 //                notifyImageDeleted(currentIndex); // Notify the fragment about image deletion

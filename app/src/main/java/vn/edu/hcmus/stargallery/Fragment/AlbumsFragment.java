@@ -3,6 +3,7 @@ package vn.edu.hcmus.stargallery.Fragment;
 import static android.os.Environment.MEDIA_MOUNTED;
 
 import android.app.Application;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,16 +13,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import vn.edu.hcmus.stargallery.Activity.AlbumDetailActivity;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
@@ -33,11 +40,12 @@ import vn.edu.hcmus.stargallery.R;
 
 public class AlbumsFragment extends Fragment {
     RecyclerView albumsView;
-    LinearLayout layout;
-    static int PERMISSION_REQUEST_CODE = 100;
+    RelativeLayout layout;
+    static int PERMISSION_REQUEST_CODE=100;
     HashMap<String, ArrayList<String>> albums;
     AlbumsViewAdapter adapter;
     GridLayoutManager manager;
+    FloatingActionButton addAlbum;
     boolean shouldExecuteOnResume = false;
 
     @Override
@@ -48,7 +56,6 @@ public class AlbumsFragment extends Fragment {
         albums = new HashMap<>();
         adapter = new AlbumsViewAdapter(getContext(), albums);
         manager = new GridLayoutManager(getContext(),2);
-
         adapter.setOnClickListener(new AlbumsViewAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
@@ -73,10 +80,43 @@ public class AlbumsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        layout = (LinearLayout) inflater.inflate(R.layout.fragment_albums, container, false);
+        layout = (RelativeLayout) inflater.inflate(R.layout.fragment_albums, container, false);
         albumsView = layout.findViewById(R.id.albums_view);
         albumsView.setAdapter(adapter);
         albumsView.setLayoutManager(manager);
+        addAlbum = layout.findViewById(R.id.add_album_btn);
+
+        addAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(requireContext());
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.create_alum_text, null);
+                final EditText input = dialogView.findViewById(R.id.album_name_input);
+                confirmDialog.setView(dialogView);
+                confirmDialog.setTitle("Add album");
+                confirmDialog.setMessage("Enter album's name");
+                confirmDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String abname = input.getText().toString().trim();
+                        if(!abname.isEmpty()){
+                            Log.d("TEN ALBUM", input.getText().toString());
+                        } else {
+                            Log.d("KO PHAI TEN ALBUM", "___");
+                        }
+                    }
+                });
+                confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+//                dialogInterface.cancel();
+                        dialogInterface.dismiss();
+                    }
+                });
+                confirmDialog.show();
+            }
+        });
         loadAlbums();
         return layout;
     }
