@@ -40,6 +40,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
+import com.ortiz.touchview.TouchImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +89,9 @@ public class ImageDetailActivity extends AppCompatActivity {
     public static int GALLERY_RESULT = 2;
     DatabaseHelper dbHelper;
 
+    private int getPosition(int currentIndex){
+        return currentIndex;
+    }
     private SettingsList createPesdkSettingsList() {
 
         // Create a empty new SettingsList and apply the changes on this reference.
@@ -135,6 +139,7 @@ public class ImageDetailActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
         nav_bot = findViewById(R.id.detail_nav_bot);
+
         nav_bot.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -409,7 +414,12 @@ public class ImageDetailActivity extends AppCompatActivity {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("itemDeleted", currentIndex);
                 setResult(Activity.RESULT_OK, resultIntent);
+
+                images_list.remove(getPosition(currentIndex));
+
                 finish();
+
+
 //                Toast.makeText(getApplicationContext(), "H notify ne", Toast.LENGTH_SHORT).show();
 //                notifyImageDeleted(currentIndex); // Notify the fragment about image deletion
 //                new File(images_list.get(currentIndex)).delete();
