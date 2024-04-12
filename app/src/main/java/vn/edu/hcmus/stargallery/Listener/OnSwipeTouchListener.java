@@ -51,13 +51,13 @@ public abstract class OnSwipeTouchListener implements ImageView.OnTouchListener 
             }
         });
     }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
 
     public abstract void onSwipeRight();
-
     public abstract void onSwipeLeft();
     public abstract void onSwipeTop() throws IOException;
     public abstract void onSwipeBottom();

@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/detail_nav_bot_menu" />
+        app:menu="@menu/detail_nav_bot_menu"
+        />
 
 </LinearLayout>

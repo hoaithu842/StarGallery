@@ -1,7 +1,9 @@
 package vn.edu.hcmus.stargallery.Activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,12 +31,13 @@ import vn.edu.hcmus.stargallery.R;
 
 public class AlbumDetailActivity extends AppCompatActivity {
     String album_name;
+    private static final int REQUEST_DELETE_ITEM = 100;
     ArrayList<String> images;
     AlbumDetailAdapter adapter;
     GridLayoutManager manager;
     RecyclerView imagesView;
-
     ImageButton backBtn;
+    ImageButton addImgBtn;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_detail);
@@ -75,7 +79,38 @@ public class AlbumDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_DELETE_ITEM && resultCode == Activity.RESULT_OK) {
+
+            Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
+            if (itemDeleted >= 0 && itemDeleted < images.size()) {
+                String imagePath = images.get(itemDeleted);
+                images.remove(images.get(itemDeleted));
+                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
+                // Handle item deletion
+                // Check if the image path exists before deletion (avoid potential errors)
+                if (new File(imagePath).exists()) {
+                    int deleted = getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
+                    if (deleted == 1) {
+                        // Image deleted successfully
+                        Log.i("ImageDelete", "Image deleted: " + imagePath);
+                    } else {
+                        Log.w("ImageDelete", "Failed to delete image: " + imagePath);
+                    }
+                } else {
+                    Log.w("ImageDelete", "Image path not found: " + imagePath);
+                }
+
+
+            }
+        }
+    }
 
 }

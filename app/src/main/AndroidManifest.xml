@@ -4,11 +4,11 @@
 
     <uses-feature android:glEsVersion="0x00030000" android:required="true" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.MANAGE_MEDIA"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="replace" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
@@ -64,27 +64,6 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
-        <activity
-            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
-        <activity
-            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorStickerActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
-        <activity
-            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorTextActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Material.NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
-        <activity
-            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorDrawActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
     </application>
 
 </manifest>
