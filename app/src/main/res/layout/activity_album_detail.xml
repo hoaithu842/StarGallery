@@ -6,25 +6,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10sp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:layout_margin="10sp"
             android:id="@+id/album_detail_back_btn"
             android:background="@drawable/_back_btn"/>
         <TextView
             android:id="@+id/totalAlbumImage"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="2sp"
-            android:textSize="20sp"
+            android:gravity="center"
+            android:textSize="50dp"
+            android:textStyle="bold"
             android:layout_margin="1sp"
-            android:text="Ten album \n So anh"/>
+            android:layout_marginTop="20dp"
+            android:text="Ten album"/>
+
+        <TextView
+            android:id="@+id/totalImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:text="Total o day"
+            android:textColor="@color/gray"/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,6 +49,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/album_images_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
 
 </LinearLayout>

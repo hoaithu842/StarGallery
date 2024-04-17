@@ -14,9 +14,6 @@ public class DatabaseHelper {
     private static final String DATABASE_NAME = "StarGalleryDB";
     private static final String TABLE_FAVORITE = "Favorite";
 
-    // Table Columns
-    private static final String KEY_ID = "ID";
-    private static final String KEY_PATH = "PATH";
     public DatabaseHelper(Application application) {
         File storagePath = application.getFilesDir();
         String myDbPath = storagePath + "/" + DATABASE_NAME;
@@ -38,12 +35,22 @@ public class DatabaseHelper {
         }
     }
 
-    void createFavoriteTable(String TABLE_NAME) {
+    public void createFavoriteTable(String TABLE_NAME) {
 //        db.execSQL("drop table if exists " + TABLE_NAME);
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ("
                 + " ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + " PATH TEXT UNIQUE);");
     }
+
+//    public void createAlbum(String ALBUM_NAME) {
+//        db.execSQL("drop table if exists " + ALBUM_NAME);
+//        db.execSQL("CREATE TABLE IF NOT EXISTS " + "" + " ("
+//                + " ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+//                + " PATH TEXT UNIQUE);");
+//        db.execSQL("CREATE TABLE IF NOT EXISTS " + ALBUM_NAME + " ("
+//                + " ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+//                + " PATH TEXT UNIQUE);");
+//    }
 
     public void insertFavoriteImage(String path) {
         try {
@@ -127,4 +134,51 @@ public class DatabaseHelper {
             //
         }
     }
+
+    public boolean albumExists(String albName) {
+        boolean exists = false;
+        try {
+            db.beginTransaction();
+            try {
+                String sql = "SELECT * FROM " + albName + " WHERE ALBUM_NAME = ?";
+                Cursor cursor = db.rawQuery(sql, new String[]{albName});
+                exists = cursor.getCount() > 0;
+                cursor.close();
+                db.setTransactionSuccessful();
+            } catch (SQLiteException e) {
+                //
+            } finally {
+                db.endTransaction();
+            }
+//            db.close();
+        } catch (SQLiteException e) {
+            //
+        }
+        return exists;
+    }
+
+//    public ArrayList<String> getAlbumsName() {
+//        ArrayList<String> albNames = new ArrayList<>();
+//        try {
+//            db.beginTransaction();
+//            try {
+//                String sql = "SELECT * FROM " + TABLE_FAVORITE;
+//                Cursor c1 = db.rawQuery(sql, null);
+//                c1.moveToPosition(-1);
+//                while (c1.moveToNext()) {
+//                    int ID = c1.getInt(0);
+//                    String PATH = c1.getString(1);
+//                    albNames.add(PATH);
+//                }
+//            } catch (SQLiteException e) {
+//                //
+//            } finally {
+//                db.endTransaction();
+//            }
+////            db.close();
+//        } catch (SQLiteException e) {
+//            //
+//        }
+//        return favoriteImages;
+//    }
 }

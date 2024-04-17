@@ -15,11 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,12 +42,12 @@ import vn.edu.hcmus.stargallery.R;
 
 public class AlbumsFragment extends Fragment {
     RecyclerView albumsView;
-    RelativeLayout layout;
-    static int PERMISSION_REQUEST_CODE=100;
+    LinearLayout layout;
+    static int PERMISSION_REQUEST_CODE = 100;
     HashMap<String, ArrayList<String>> albums;
     AlbumsViewAdapter adapter;
     GridLayoutManager manager;
-    FloatingActionButton addAlbum;
+    AppCompatImageButton addAlbumBtn;
     boolean shouldExecuteOnResume = false;
 
     @Override
@@ -55,7 +57,7 @@ public class AlbumsFragment extends Fragment {
 
         albums = new HashMap<>();
         adapter = new AlbumsViewAdapter(getContext(), albums);
-        manager = new GridLayoutManager(getContext(),2);
+        manager = new GridLayoutManager(getContext(), 2);
         adapter.setOnClickListener(new AlbumsViewAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
@@ -80,13 +82,13 @@ public class AlbumsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        layout = (RelativeLayout) inflater.inflate(R.layout.fragment_albums, container, false);
+        layout = (LinearLayout) inflater.inflate(R.layout.fragment_albums, container, false);
         albumsView = layout.findViewById(R.id.albums_view);
         albumsView.setAdapter(adapter);
         albumsView.setLayoutManager(manager);
-        addAlbum = layout.findViewById(R.id.add_album_btn);
+        addAlbumBtn = layout.findViewById(R.id.add_album_btn);
 
-        addAlbum.setOnClickListener(new View.OnClickListener() {
+        addAlbumBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(requireContext());
@@ -99,9 +101,10 @@ public class AlbumsFragment extends Fragment {
                 confirmDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String abname = input.getText().toString().trim();
-                        if(!abname.isEmpty()){
-                            Log.d("TEN ALBUM", input.getText().toString());
+                        String abName = input.getText().toString().trim();
+                        if (!abName.isEmpty()) {
+                            createAlbum(abName);
+//                            Log.d("TEN ALBUM", input.getText().toString());
                         } else {
                             Log.d("KO PHAI TEN ALBUM", "___");
                         }
@@ -128,30 +131,43 @@ public class AlbumsFragment extends Fragment {
             final String order = MediaStore.Images.Media.DATE_TAKEN + " DESC";
             Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, null, null, order);
 //            if (cursor != null) {
-                while (cursor.moveToNext()) {
-                    int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                    int bucketIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+            while (cursor.moveToNext()) {
+                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                int bucketIndex = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
 
-                    String imagePath = cursor.getString(columnIndex);
-                    String albumName = cursor.getString(bucketIndex);
+                String imagePath = cursor.getString(columnIndex);
+                String albumName = cursor.getString(bucketIndex);
 
-                    if (!albums.containsKey(albumName)) {
-                        ArrayList<String> imagesList = new ArrayList<>();
-                        imagesList.add(imagePath);
-                        albums.put(albumName, imagesList);
-                    } else {
-                        ArrayList<String> imagesList = albums.get(albumName);
-                        imagesList.add(imagePath);
-                    }
+                if (!albums.containsKey(albumName)) {
+                    ArrayList<String> imagesList = new ArrayList<>();
+                    imagesList.add(imagePath);
+                    albums.put(albumName, imagesList);
+                } else {
+                    ArrayList<String> imagesList = albums.get(albumName);
+                    imagesList.add(imagePath);
                 }
+            }
+            DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
+            ArrayList<String> imagesList = dbHelper.getFavoriteImages();
+            if (imagesList.isEmpty()) {
+                albumsView.getAdapter().notifyDataSetChanged();
+            } else {
+                albums.put("Favorites", imagesList);
+                albumsView.getAdapter().notifyDataSetChanged();
+            }
+
+
         }
+    }
+
+    private void createAlbum(String albName) {
         DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
-        ArrayList<String> imagesList = dbHelper.getFavoriteImages();
-        if (imagesList.isEmpty()) {
-            albumsView.getAdapter().notifyDataSetChanged();
+        if (dbHelper.albumExists(albName)) {
+            Log.d("DB", "Duplicated!");
         } else {
-            albums.put("Favorites", imagesList);
-            albumsView.getAdapter().notifyDataSetChanged();
+            Log.d("DB", "Lam gi do di");
+            dbHelper.createAlbum(albName);
+            Log.d("DB", "Created! -> Notify");
         }
     }
 }

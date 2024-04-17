@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,10 +35,26 @@ public class MainActivity extends AppCompatActivity implements QRHelper.QRScanLi
     ImagesFragment imagesFragment;
     static int PERMISSION_REQUEST_CODE=100;
     QRHelper qrHelper;
+    private void setStatusBarColorFromLayout() {
+        // For demonstration, let's assume you have a layout with ID "mainLayout"
+//        int backgroundColor = getResources().getColor(R.color.gradient); // Get color from your layout
+
+        // Set the status bar color
+        int statusBarColor = ContextCompat.getColor(this, R.color.black);
+        setStatusBarColor(statusBarColor);
+    }
+
+    private void setStatusBarColor(int color) {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(color);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setStatusBarColorFromLayout();
 
         qrHelper = new QRHelper(this);
         qrHelper.setQRScanListener(this);

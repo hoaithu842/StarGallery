@@ -109,7 +109,7 @@ public class ImagesFragment extends Fragment {
         imagesView.setLayoutManager(manager);
         loadImages();
         TextView txt = layout.findViewById(R.id.totalImage);
-        txt.setText("Total " + Integer.toString(images.size()) + " images");
+        txt.setText(Integer.toString(images.size()) + " photos");
         return layout;
     }
 

@@ -60,8 +60,10 @@ public class AlbumDetailActivity extends AppCompatActivity {
             SpannableStringBuilder s = new SpannableStringBuilder();
             s.append(album_name);
             s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, album_name.length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s.append("\n").append(images.size() + " images");
+//            s.append("\n").append(images.size() + " images");
             total.setText(s);
+            TextView txt = findViewById(R.id.totalImage);
+            txt.setText(Integer.toString(images.size()) + " photos");
         }
         backBtn = findViewById(R.id.album_detail_back_btn);
         backBtn.setOnClickListener(new View.OnClickListener() {

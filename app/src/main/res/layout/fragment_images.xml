@@ -1,21 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/totalImage"
+    <!-- Top LinearLayout taking up one-third of the screen -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="2sp"
-        android:gravity="center"
-        android:textSize="23dp"
-        android:layout_margin="1sp"
-        android:text="Total o day"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2sp"
+            android:gravity="center"
+            android:textSize="50dp"
+            android:textStyle="bold"
+            android:layout_margin="1sp"
+            android:layout_marginTop="20dp"
+            android:text="Recent"/>
+
+        <TextView
+            android:id="@+id/totalImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:text="Total o day"
+            android:textColor="@color/gray"/>
+
+    </LinearLayout>
+
+    <!-- RecyclerView taking up two-thirds of the screen -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/images_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="2"/>
 
 </LinearLayout>
