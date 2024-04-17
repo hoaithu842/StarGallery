@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
-    android:orientation="vertical"
-    app:labelVisibilityMode="unlabeled">
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/main_frame"
@@ -19,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        app:menu="@menu/main_nav_menu"/>
+        app:menu="@menu/main_nav_menu"
+        app:labelVisibilityMode="unlabeled"/>
 
 
 

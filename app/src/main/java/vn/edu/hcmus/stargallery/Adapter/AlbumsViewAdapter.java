@@ -1,6 +1,7 @@
 package vn.edu.hcmus.stargallery.Adapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +80,14 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             album_cover = itemView.findViewById(R.id.album_cover);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+//            int totalHorizontalSpacing = (int) (10* (ColNum - 1)); // Calculate total horizontal spacing
+            int screenWidth = displayMetrics.widthPixels ; //- totalHorizontalSpacing; // Subtract total spacing from screen width
+            int columnWidth =  (int)(screenWidth / 2); // Divide by number of columns
+            album_cover.requestLayout();
+            album_cover.getLayoutParams().height = columnWidth;
+
+            album_cover.getLayoutParams().width = columnWidth;
             album_name = itemView.findViewById(R.id.album_name);
             album_quant = itemView.findViewById(R.id.album_quant);
         }

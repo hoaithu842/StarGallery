@@ -1,12 +1,15 @@
 package vn.edu.hcmus.stargallery.Adapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +26,8 @@ public class ImagesViewAdapter extends RecyclerView.Adapter<ImagesViewAdapter.Vi
     private Context context;
     private ArrayList<String> images_list;
     private OnClickListener onClickListener;
+
+    private OnLongClickListener onLongClickListener;
 
     @NonNull
     @Override
@@ -49,7 +54,11 @@ public class ImagesViewAdapter extends RecyclerView.Adapter<ImagesViewAdapter.Vi
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(context, "LONGGGGGGGGGG", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "LONGGGGGGGGGG", Toast.LENGTH_SHORT).show();
+                if (onLongClickListener != null) { // Check for null to avoid NullPointerException
+                    onLongClickListener.onLongClick(position);
+                    Toast.makeText(context, "LONGGGGGGGGGG", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
         });
@@ -58,11 +67,15 @@ public class ImagesViewAdapter extends RecyclerView.Adapter<ImagesViewAdapter.Vi
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
-
+    public void setOnLongClickListener(OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
+    }
     public interface OnClickListener {
         void onClick(int position);
     }
-
+    public interface OnLongClickListener { // Corrected interface name
+        void onLongClick(int position);
+    }
     @Override
     public int getItemCount() {
         return images_list.size();
@@ -77,7 +90,15 @@ public class ImagesViewAdapter extends RecyclerView.Adapter<ImagesViewAdapter.Vi
         private ImageView image;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            image=itemView.findViewById(R.id.item_image);
+            image = itemView.findViewById(R.id.item_image);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+//            int totalHorizontalSpacing = (int) (10* (ColNum - 1)); // Calculate total horizontal spacing
+            int screenWidth = displayMetrics.widthPixels ; //- totalHorizontalSpacing; // Subtract total spacing from screen width
+            int columnWidth =  (int)(screenWidth / 4); // Divide by number of columns
+            image.requestLayout();
+            image.getLayoutParams().height = columnWidth;
+
+            image.getLayoutParams().width = columnWidth;
         }
     }
 }
