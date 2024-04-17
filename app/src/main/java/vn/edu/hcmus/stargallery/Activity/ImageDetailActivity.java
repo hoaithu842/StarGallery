@@ -410,26 +410,13 @@ public class ImageDetailActivity extends AppCompatActivity {
         confirmDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("itemDeleted", currentIndex);
                 setResult(Activity.RESULT_OK, resultIntent);
-
                 images_list.remove(getPosition(currentIndex));
-
+//                dbHelper.insertTrash(image_path);
+//                Log.d("do", "do");
                 finish();
-
-
-//                Toast.makeText(getApplicationContext(), "H notify ne", Toast.LENGTH_SHORT).show();
-//                notifyImageDeleted(currentIndex); // Notify the fragment about image deletion
-//                new File(images_list.get(currentIndex)).delete();
-//                images_list.remove(currentIndex);
-//                if (images_list.size() > currentIndex) {
-//                    loadImage(images_list.get(currentIndex));
-//                } else if (images_list.size() > currentIndex - 1) {
-//                    currentIndex--;
-//                    loadImage(images_list.get(currentIndex-1));
-//                }
             }
         });
         confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

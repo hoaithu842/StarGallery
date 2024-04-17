@@ -30,11 +30,11 @@ import vn.edu.hcmus.stargallery.Fragment.AlbumsFragment;
 import vn.edu.hcmus.stargallery.Fragment.ImagesFragment;
 import vn.edu.hcmus.stargallery.Helper.QRHelper;
 
-public class MainActivity extends AppCompatActivity implements QRHelper.QRScanListener {
+public class MainActivity extends AppCompatActivity {
     AlbumsFragment albumsFragment;
     ImagesFragment imagesFragment;
     static int PERMISSION_REQUEST_CODE=100;
-    QRHelper qrHelper;
+//    QRHelper qrHelper;
     private void setStatusBarColorFromLayout() {
         // For demonstration, let's assume you have a layout with ID "mainLayout"
 //        int backgroundColor = getResources().getColor(R.color.gradient); // Get color from your layout
@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity implements QRHelper.QRScanLi
 
         setStatusBarColorFromLayout();
 
-        qrHelper = new QRHelper(this);
-        qrHelper.setQRScanListener(this);
+//        qrHelper = new QRHelper(this);
+//        qrHelper.setQRScanListener(this);
 
         albumsFragment = new AlbumsFragment();
         imagesFragment = new ImagesFragment();
@@ -73,19 +73,20 @@ public class MainActivity extends AppCompatActivity implements QRHelper.QRScanLi
                 } else if (item.getItemId() == R.id.show_albums){
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, albumsFragment).commit();
                     return true;
-                } else if (item.getItemId() == R.id.scan_qr){
-                    qrHelper.scanQRCode();
-                    return true;
                 }
+//                else if (item.getItemId() == R.id.scan_qr){
+//                    qrHelper.scanQRCode();
+//                    return true;
+//                }
                 return false;
             }
         });
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        qrHelper.handleScanResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        qrHelper.handleScanResult(requestCode, resultCode, data);
+//    }
     private void checkPermissions() {
         var context = getApplicationContext();
 
@@ -117,53 +118,53 @@ public class MainActivity extends AppCompatActivity implements QRHelper.QRScanLi
 
         }
     }
-
-    @Override
-    public void onQRScanSuccess(String scannedData) {
-        if (isValidUrl(scannedData)) {
-            openUrlInBrowser(scannedData);
-        } else {
-            if (isImage(scannedData)) {
-                displayImage(scannedData);
-            } else {
-                Log.d("QR", "Scanned data is neither a URL nor an image");
-            }
-        }
-    }
-
-    @Override
-    public void onQRScanFailure() {
-        Log.d("QR", "Scan failed or cancelled");
-    }
-
-    private boolean isValidUrl(String url) {
-        return Patterns.WEB_URL.matcher(url).matches();
-    }
-
-    private void openUrlInBrowser(String url) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(browserIntent);
-    }
-
-    private boolean isImage(String filePath) {
-        String mimeType = getMimeType(filePath);
-        return mimeType != null && mimeType.startsWith("image");
-    }
-
-    private String getMimeType(String filePath) {
-        String extension = MimeTypeMap.getFileExtensionFromUrl(filePath);
-        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-    }
-
-    private void displayImage(String imagePath) {
-        Intent intent = new Intent(this, ImageDetailActivity.class);
-        intent.putExtra("image_path", imagePath);
-
-        ArrayList<String> images = new ArrayList<>();
-        images.add(imagePath);
-        intent.putStringArrayListExtra("images_list", images);
-        int REQUEST_DELETE_ITEM = 100;
-
-        startActivityForResult(intent, REQUEST_DELETE_ITEM);
-    }
+//
+//    @Override
+//    public void onQRScanSuccess(String scannedData) {
+//        if (isValidUrl(scannedData)) {
+//            openUrlInBrowser(scannedData);
+//        } else {
+//            if (isImage(scannedData)) {
+//                displayImage(scannedData);
+//            } else {
+//                Log.d("QR", "Scanned data is neither a URL nor an image");
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void onQRScanFailure() {
+//        Log.d("QR", "Scan failed or cancelled");
+//    }
+//
+//    private boolean isValidUrl(String url) {
+//        return Patterns.WEB_URL.matcher(url).matches();
+//    }
+//
+//    private void openUrlInBrowser(String url) {
+//        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//        startActivity(browserIntent);
+//    }
+//
+//    private boolean isImage(String filePath) {
+//        String mimeType = getMimeType(filePath);
+//        return mimeType != null && mimeType.startsWith("image");
+//    }
+//
+//    private String getMimeType(String filePath) {
+//        String extension = MimeTypeMap.getFileExtensionFromUrl(filePath);
+//        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+//    }
+//
+//    private void displayImage(String imagePath) {
+//        Intent intent = new Intent(this, ImageDetailActivity.class);
+//        intent.putExtra("image_path", imagePath);
+//
+//        ArrayList<String> images = new ArrayList<>();
+//        images.add(imagePath);
+//        intent.putStringArrayListExtra("images_list", images);
+//        int REQUEST_DELETE_ITEM = 100;
+//
+//        startActivityForResult(intent, REQUEST_DELETE_ITEM);
+//    }
 }

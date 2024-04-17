@@ -125,6 +125,11 @@ public class AlbumsFragment extends Fragment {
     }
 
     private void loadAlbums() {
+        DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
+
+        ArrayList<String> imagesList = dbHelper.getFavoriteImages();
+        albums.put("Favorites", imagesList);
+
         boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
         if (SDCard) {
             final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
@@ -139,25 +144,23 @@ public class AlbumsFragment extends Fragment {
                 String albumName = cursor.getString(bucketIndex);
 
                 if (!albums.containsKey(albumName)) {
-                    ArrayList<String> imagesList = new ArrayList<>();
+                    imagesList = new ArrayList<>();
                     imagesList.add(imagePath);
                     albums.put(albumName, imagesList);
                 } else {
-                    ArrayList<String> imagesList = albums.get(albumName);
+                    imagesList = albums.get(albumName);
                     imagesList.add(imagePath);
                 }
             }
-            DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
-            ArrayList<String> imagesList = dbHelper.getFavoriteImages();
-            if (imagesList.isEmpty()) {
-                albumsView.getAdapter().notifyDataSetChanged();
-            } else {
-                albums.put("Favorites", imagesList);
-                albumsView.getAdapter().notifyDataSetChanged();
-            }
-
-
         }
+
+        ArrayList<String> albumNames = dbHelper.getAlbumNames();
+        for (int i=0; i<albumNames.size(); i++) {
+            imagesList = dbHelper.getAlbumImages(albumNames.get(i));
+            albums.put(albumNames.get(i), imagesList);
+        }
+
+        albumsView.getAdapter().notifyDataSetChanged();
     }
 
     private void createAlbum(String albName) {

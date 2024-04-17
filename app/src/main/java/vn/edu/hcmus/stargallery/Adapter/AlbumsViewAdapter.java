@@ -39,10 +39,18 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
         holder.album_name.setText(albums_name.get(position));
         holder.album_quant.setText(Integer.toString(albums.get(albums_name.get(position)).size()) + " images");
 
-        File album_cover = new File(albums.get(albums_name.get(position)).get(0));
-        if(album_cover.exists()){
-            Glide.with(context).load(album_cover).into(holder.album_cover);
+        if (albums.get(albums_name.get(position)).size()>0) {
+            File album_cover = new File(albums.get(albums_name.get(position)).get(0));
+            if(album_cover.exists()){
+                Glide.with(context).load(album_cover).into(holder.album_cover);
+            }
+        } else {
+//            File album_cover = new File(albums.get(albums_name.get(position)).get(0));
+//            if(album_cover.exists()){
+                Glide.with(context).load(R.drawable.background).into(holder.album_cover);
+//            }
         }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
