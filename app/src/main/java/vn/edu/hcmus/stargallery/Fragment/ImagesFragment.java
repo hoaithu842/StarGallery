@@ -42,11 +42,9 @@ public class ImagesFragment extends Fragment {
     ArrayList<String> images;
     ImagesViewAdapter adapter;
     GridLayoutManager manager;
-    boolean shouldExecuteOnResume = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        shouldExecuteOnResume = false;
         super.onCreate(savedInstanceState);
 
         images = new ArrayList<>();

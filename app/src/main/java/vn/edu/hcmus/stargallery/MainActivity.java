@@ -28,11 +28,13 @@ import java.util.ArrayList;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.Fragment.AlbumsFragment;
 import vn.edu.hcmus.stargallery.Fragment.ImagesFragment;
+import vn.edu.hcmus.stargallery.Fragment.UtilitiesFragment;
 import vn.edu.hcmus.stargallery.Helper.QRHelper;
 
 public class MainActivity extends AppCompatActivity {
     AlbumsFragment albumsFragment;
     ImagesFragment imagesFragment;
+    UtilitiesFragment utilitiesFragment;
     static int PERMISSION_REQUEST_CODE=100;
 //    QRHelper qrHelper;
     private void setStatusBarColorFromLayout() {
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         albumsFragment = new AlbumsFragment();
         imagesFragment = new ImagesFragment();
+        utilitiesFragment = new UtilitiesFragment();
 
         checkPermissions();
         BottomNavigationView nav = findViewById(R.id.main_nav);
@@ -74,10 +77,11 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, albumsFragment).commit();
                     return true;
                 }
-//                else if (item.getItemId() == R.id.scan_qr){
+                else if (item.getItemId() == R.id.scan_qr){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, utilitiesFragment).commit();
 //                    qrHelper.scanQRCode();
-//                    return true;
-//                }
+                    return true;
+                }
                 return false;
             }
         });

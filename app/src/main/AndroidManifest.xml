@@ -54,6 +54,11 @@
             android:name=".Activity.AlbumDetailActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".Activity.ImageDuplicateActivity"
+            android:screenOrientation="portrait">
+        </activity>
         
         <provider
             android:name="androidx.core.content.FileProvider"
