@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import 	android.text.SpannableStringBuilder;
+
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -39,6 +41,7 @@ public class AlbumDetailActivity extends AppCompatActivity {
     ImageButton backBtn;
     ImageButton addImgBtn;
     public void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_detail);
 
