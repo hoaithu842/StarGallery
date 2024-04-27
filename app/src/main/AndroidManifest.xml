@@ -59,9 +59,12 @@
             android:name=".Activity.ImageDuplicateActivity"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".Activity.FaceDetectActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.MultiSelectImageActivity"
             android:screenOrientation="portrait">
         </activity>
         <provider

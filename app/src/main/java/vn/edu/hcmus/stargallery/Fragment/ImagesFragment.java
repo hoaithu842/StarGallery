@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import vn.edu.hcmus.stargallery.Activity.MultiSelectImageActivity;
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.R;
@@ -61,7 +62,18 @@ public class ImagesFragment extends Fragment {
                 startActivityForResult(intent, REQUEST_DELETE_ITEM);
             }
         });
+        adapter.setOnLongClickListener(new ImagesViewAdapter.OnLongClickListener() {
+            @Override
+            public void onLongClick(int position) {
+                Intent intent = new Intent(getActivity(), MultiSelectImageActivity.class);
+                intent.putExtra("image_path", images.get(position));
+                intent.putStringArrayListExtra("images_list", images);
+                startActivity(intent);
+                Toast.makeText(getContext(), "LONGGGG", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

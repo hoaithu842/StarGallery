@@ -5,17 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.style.StyleSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import 	android.text.SpannableStringBuilder;
-import androidx.activity.EdgeToEdge;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -26,74 +28,76 @@ import com.google.android.material.navigation.NavigationBarView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import vn.edu.hcmus.stargallery.Adapter.AlbumDetailAdapter;
-import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
+import vn.edu.hcmus.stargallery.Adapter.MultiSelectImagesViewAdapter;
+import vn.edu.hcmus.stargallery.Adapter.MultiSelectImagesViewAdapter;
 import vn.edu.hcmus.stargallery.Listener.OnSwipeTouchListener;
 import vn.edu.hcmus.stargallery.R;
 
-public class AlbumDetailActivity extends AppCompatActivity {
+public class MultiSelectImageActivity extends AppCompatActivity {
     String album_name;
+    String image_path;
     private static final int REQUEST_DELETE_ITEM = 100;
     ArrayList<String> images;
-    AlbumDetailAdapter adapter;
+    ArrayList<String> uniqueSet ;
+    MultiSelectImagesViewAdapter adapter;
     GridLayoutManager manager;
     RecyclerView imagesView;
     ImageButton backBtn;
-    ImageButton addImgBtn;
+
     public void onCreate(Bundle savedInstanceState) {
-        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album_detail);
+        setContentView(R.layout.activity_multiselect_image);
 
-        images=new ArrayList<>();
-
+        images = new ArrayList<>();
+        uniqueSet = new ArrayList<>();
         Intent intent = getIntent();
         if (intent != null) {
             album_name = intent.getStringExtra("album_name");
+            image_path = intent.getStringExtra("image_path");
             images = intent.getStringArrayListExtra("images_list");
+            adapter = new MultiSelectImagesViewAdapter(this, images);
+            manager = new GridLayoutManager(this,4);
 
-            adapter=new AlbumDetailAdapter(this, images);
-            manager=new GridLayoutManager(this,4);
-
-            imagesView = findViewById(R.id.album_images_view);
+            imagesView = findViewById(R.id.multi_images_view);
             imagesView.setAdapter(adapter);
             imagesView.setLayoutManager(manager);
 
-            TextView total = findViewById(R.id.totalAlbumImage);
-            SpannableStringBuilder s = new SpannableStringBuilder();
-            s.append(album_name);
-            s.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, album_name.length(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            s.append("\n").append(images.size() + " images");
-            total.setText(s);
-            TextView txt = findViewById(R.id.totalImage);
-            txt.setText(Integer.toString(images.size()) + " photos");
+            if(image_path != null && image_path != ""){
+                Log.d("OOOOOOOO", image_path);
+            }
+            if(album_name != null && album_name != ""){
+                Log.d("QQQQQQQQQQQ", album_name);
+            }
         }
-        backBtn = findViewById(R.id.album_detail_back_btn);
+        backBtn = findViewById(R.id.multi_backbtn);
         backBtn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-                finish();
-           }
-        });
-        adapter.setOnClickListener(new AlbumDetailAdapter.OnClickListener() {
             @Override
-            public void onClick(int position) {
-                Intent intent = new Intent(AlbumDetailActivity.this, ImageDetailActivity.class);
-                intent.putExtra("image_path", images.get(position));
-                intent.putStringArrayListExtra("images_list", images);
-                startActivity(intent);
+            public void onClick(View v) {
+                Log.d("TOTAL",Integer.toString(uniqueSet.size()));
+                for(String i:uniqueSet){
+                    Log.d("ITEM IN HERE", i);
+                }
+//                finish();
             }
         });
-        adapter.setOnLongClickListener(new AlbumDetailAdapter.OnLongClickListener() {
+        adapter.setOnClickListener(new MultiSelectImagesViewAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position) {
+                String img = images.get(position);
+                Log.d("ANH NE", img);
+                if(uniqueSet.contains(img))
+                    uniqueSet.remove(img);
+                else uniqueSet.add(img);
+            }
+        });
+        adapter.setOnLongClickListener(new MultiSelectImagesViewAdapter.OnLongClickListener() {
             @Override
             public void onLongClick(int position) {
-                Intent intent = new Intent(AlbumDetailActivity.this, MultiSelectImageActivity.class);
-                intent.putExtra("album_name", album_name);
-                intent.putExtra("image_path", images.get(position));
-                intent.putStringArrayListExtra("images_list", images);
                 Toast.makeText(getApplicationContext(), "LONGGGG", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
             }
         });
 

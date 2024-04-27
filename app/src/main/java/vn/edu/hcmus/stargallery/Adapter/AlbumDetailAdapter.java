@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -22,6 +23,7 @@ public class AlbumDetailAdapter extends RecyclerView.Adapter<AlbumDetailAdapter.
     private Context context;
     private ArrayList<String> images_list;
     private OnClickListener onClickListener;
+    private OnLongClickListener onLongClickListener;
 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.item_image,null,true);
@@ -43,16 +45,30 @@ public class AlbumDetailAdapter extends RecyclerView.Adapter<AlbumDetailAdapter.
                 }
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+//                Toast.makeText(context, "LONGGGGGGGGGG", Toast.LENGTH_SHORT).show();
+                if (onLongClickListener != null) {
+                    onLongClickListener.onLongClick(position);
+                }
+                return true;
+            }
+        });
     }
 
     public void setOnClickListener(AlbumDetailAdapter.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
-
+    public void setOnLongClickListener(OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
+    }
     public interface OnClickListener {
         void onClick(int position);
     }
-
+    public interface OnLongClickListener {
+        void onLongClick(int position);
+    }
     @Override
     public int getItemCount() {
         return images_list.size();
@@ -67,7 +83,7 @@ public class AlbumDetailAdapter extends RecyclerView.Adapter<AlbumDetailAdapter.
         private ImageView image;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            image=itemView.findViewById(R.id.item_image);
+            image = itemView.findViewById(R.id.item_image);
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
 //            int totalHorizontalSpacing = (int) (10* (ColNum - 1)); // Calculate total horizontal spacing
             int screenWidth = displayMetrics.widthPixels ; //- totalHorizontalSpacing; // Subtract total spacing from screen width

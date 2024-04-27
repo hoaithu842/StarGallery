@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -47,7 +48,8 @@ public class AlbumsFragment extends Fragment {
     HashMap<String, ArrayList<String>> albums;
     AlbumsViewAdapter adapter;
     GridLayoutManager manager;
-    AppCompatImageButton addAlbumBtn;
+//    AppCompatImageButton addAlbumBtn;
+    ImageButton addAlbumBtn;
     boolean shouldExecuteOnResume = false;
 
     @Override
@@ -169,7 +171,7 @@ public class AlbumsFragment extends Fragment {
             Log.d("DB", "Duplicated!");
         } else {
             Log.d("DB", "Lam gi do di");
-            dbHelper.createAlbum(albName);
+//            dbHelper.createAlbum(albName);
             Log.d("DB", "Created! -> Notify");
         }
     }
