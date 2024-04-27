@@ -26,7 +26,6 @@ public class MultiSelectImagesViewAdapter extends RecyclerView.Adapter<MultiSele
     private ArrayList<String> images_list;
     private OnClickListener onClickListener;
     private Set<Integer> selectedPositions = new HashSet<>();
-    int posi
     private OnLongClickListener onLongClickListener;
 
     @NonNull

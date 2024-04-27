@@ -84,47 +84,22 @@ public class ImageDuplicateActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void findDuplicate() {
-        ImageDuplicateFinder finder = new ImageDuplicateFinder(images);
-        List<List<String>> duplicateGroups = finder.findDuplicateImages();
-
-        for (List<String> group : duplicateGroups) {
-            if (group.size() > 1) {
-                //                    System.out.println(image);
-                duplicated.addAll(group);
+        ImageDuplicateFinder finder = new ImageDuplicateFinder(images, new ImageDuplicateFinder.OnDuplicateImageFoundListener() {
+            @Override
+            public void onDuplicateImageFound(List<List<String>> duplicateGroups) {
+                for (List<String> group : duplicateGroups) {
+                    if (group.size() > 1) {
+                        duplicated.addAll(group);
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
-        }
-        imagesView.getAdapter().notifyDataSetChanged();
+        });
+        finder.findDuplicateImagesAsync();
     }
-
-
-
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == REQUEST_DELETE_ITEM && resultCode == Activity.RESULT_OK) {
-//
-//            Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
-//            if (itemDeleted >= 0 && itemDeleted < images.size()) {
-//                String imagePath = images.get(itemDeleted);
-//                images.remove(images.get(itemDeleted));
-//                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
-//                // Handle item deletion
-//                // Check if the image path exists before deletion (avoid potential errors)
-//                if (new File(imagePath).exists()) {
-//                    int deleted = getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                            MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
-//                    if (deleted == 1) {
-//                        // Image deleted successfully
-//                        Log.i("ImageDelete", "Image deleted: " + imagePath);
-//                    } else {
-//                        Log.w("ImageDelete", "Failed to delete image: " + imagePath);
-//                    }
-//                } else {
-//                    Log.w("ImageDelete", "Image path not found: " + imagePath);
-//                }
-//
-//
-//            }
-//        }
-//    }
 }
