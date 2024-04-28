@@ -1,6 +1,7 @@
 package vn.edu.hcmus.stargallery.Helper;
 
 import android.app.Application;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -79,6 +80,27 @@ public class DatabaseHelper {
             //
         }
     }
+    public void insertMultiFavorite(ArrayList<String> paths) {
+        if(paths.isEmpty())
+            return;
+        try {
+            db.beginTransaction();
+            try {
+                // Loop through each path and insert it into the table
+                for (String path : paths) {
+                    db.execSQL("INSERT INTO " + TABLE_FAVORITE + "(PATH) VALUES ('" + path + "');");
+                }
+                db.setTransactionSuccessful(); // commit your changes
+            } catch (SQLiteException e) {
+                // Handle exception
+            } finally {
+                db.endTransaction();
+            }
+//        db.close(); // No need to close the database here
+        } catch (SQLiteException e) {
+            // Handle exception
+        }
+    }
 
     public void insertTrash(String path) {
         try {
@@ -95,6 +117,108 @@ public class DatabaseHelper {
         } catch (SQLiteException e) {
             //
         }
+    }
+    public void insertMultiTrash(ArrayList<String> paths) {
+        if(paths.isEmpty())
+            return;
+        try {
+            db.beginTransaction();
+            try {
+                // Loop through each path and insert it into the table
+                for (String path : paths) {
+                    db.execSQL("INSERT INTO " + TABLE_TRASH + "(PATH) VALUES ('" + path + "');");
+                }
+                db.setTransactionSuccessful(); // commit your changes
+            } catch (SQLiteException e) {
+                // Handle exception
+            } finally {
+                db.endTransaction();
+            }
+//        db.close(); // No need to close the database here
+        } catch (SQLiteException e) {
+            // Handle exception
+        }
+    }
+
+    public void insertMultiToAlbum(String album_name, ArrayList<String> image_list){
+
+        // First, check if the album exists in the ALBUM_NAMES table
+        String sql = "SELECT ID FROM " + ALBUM_NAMES + " WHERE NAME = " + album_name;
+
+        Cursor cursor = db.rawQuery(sql, null);
+        int albumId = -10;
+        if (cursor.moveToFirst()) {
+            albumId = (int) cursor.getInt(0);
+            Log.d("ID NE", Integer.toString(albumId));
+        }
+        cursor.close();
+        try {
+            db.beginTransaction();
+            try {
+                // Loop through each path and insert it into the table
+                for (String path : image_list) {
+//                    db.execSQL("INSERT INTO " + ALBUMS + "(PATH,ID) VALUES ('" + path + "', '" + albumId + "');");
+                    ContentValues values = new ContentValues();
+                    values.put("PATH", path);
+                    values.put("ID", albumId);
+
+                    db.insert(ALBUMS, null, values);
+
+                }
+                db.setTransactionSuccessful(); // commit your changes
+            } catch (SQLiteException e) {
+                // Handle exception
+            } finally {
+                db.endTransaction();
+            }
+        } catch (SQLiteException e) {
+            // Handle exception
+        }
+    }
+    public boolean createNewAlbum(String name){
+        ArrayList<String> albums = getAlbums();
+        if(albums.contains(name))
+            return false;
+        try {
+            db.beginTransaction();
+            try {
+                db.execSQL("INSERT INTO " + ALBUM_NAMES + "(NAME) values ('" + name + "');");
+                db.setTransactionSuccessful(); //commit your changes
+            } catch (SQLiteException e) {
+                //
+            } finally {
+                db.endTransaction();
+            }
+//            db.close();
+        } catch (SQLiteException e) {
+            //
+        }
+        return true;
+    }
+    public ArrayList<String> getAlbums(){
+        ArrayList<String> albums_name = new ArrayList<>();
+        try {
+            db.beginTransaction();
+            try {
+                String sql = "SELECT * FROM " + ALBUM_NAMES;
+                Cursor c1 = db.rawQuery(sql, null);
+                c1.moveToPosition(-1);
+                while (c1.moveToNext()) {
+                    int ID = c1.getInt(0);
+                    String PATH = c1.getString(1);
+                    albums_name.add(PATH);
+                }
+                c1.close();
+            } catch (SQLiteException e) {
+                //
+            } finally {
+                db.endTransaction();
+            }
+//            db.close();
+        } catch (SQLiteException e) {
+            //
+        }
+        return albums_name;
     }
 
     public ArrayList<String> getFavoriteImages() {
@@ -168,7 +292,7 @@ public class DatabaseHelper {
         try {
             db.beginTransaction();
             try {
-                String sql = "SELECT * FROM " + ALBUM_NAMES + " WHERE NAME=" + albName;
+                String sql = "SELECT * FROM " + ALBUM_NAMES + " WHERE NAME =?";
                 Cursor cursor = db.rawQuery(sql, new String[]{albName});
                 exists = cursor.getCount() > 0;
                 cursor.close();

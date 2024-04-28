@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,49 +25,40 @@ public class MultiSelectImagesViewAdapter extends RecyclerView.Adapter<MultiSele
 
     private Context context;
     private ArrayList<String> images_list;
+    private boolean[] clicked;
     private OnClickListener onClickListener;
-    private Set<Integer> selectedPositions = new HashSet<>();
     private OnLongClickListener onLongClickListener;
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.multiselect_item_image,null,true);
-        Log.d("ViewType", Integer.toString(viewType));
-
+//        Log.d("ViewType", Integer.toString(viewType));
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if (clicked[position]) {
+            holder.image_filtered.setVisibility(View.VISIBLE);
+            holder.image_checked.setVisibility(View.VISIBLE);
+        } else {
+            holder.image_filtered.setVisibility(View.GONE);
+            holder.image_checked.setVisibility(View.GONE);
+        }
         File image_file=new File(images_list.get(position));
         if(image_file.exists()){
             Glide.with(context).load(image_file).into(holder.image);
         }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onClickListener != null) {
-                    holder.setClicked();
-                    onClickListener.onClick(position);
-                }
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-//                Toast.makeText(context, "LONGGGGGGGGGG", Toast.LENGTH_SHORT).show();
-                if (onLongClickListener != null) {
-                    onLongClickListener.onLongClick(position);
-                }
-                return true;
-            }
-        });
-
-
     }
-
+    public void  clickedImage(String img){
+        int pos = images_list.indexOf(img);
+        clicked[pos] = true;
+    }
+    public void  unClickedImage(String img){
+        int pos = images_list.indexOf(img);
+        clicked[pos] = false;
+    }
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
@@ -87,16 +79,16 @@ public class MultiSelectImagesViewAdapter extends RecyclerView.Adapter<MultiSele
     public MultiSelectImagesViewAdapter(Context context, ArrayList<String> images_list) {
         this.context = context;
         this.images_list = images_list;
+        this.clicked = new boolean[images_list.size()];
+        Arrays.fill(clicked, false);
     }
     public class ViewHolder extends RecyclerView.ViewHolder{
         private ImageView image;
         private ImageView image_checked;
         private ImageView image_filtered;
-        private boolean clicked;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            clicked = false;
             image = itemView.findViewById(R.id.multi_images_view);
             image_filtered = itemView.findViewById(R.id.selected_img_1);
             image_checked = itemView.findViewById(R.id.selected_img_2);
@@ -144,13 +136,6 @@ public class MultiSelectImagesViewAdapter extends RecyclerView.Adapter<MultiSele
             image_filtered.requestLayout();
             image_filtered.getLayoutParams().height = size;
             image_filtered.getLayoutParams().width = size;
-        }
-
-        public void setClicked() {
-            clicked = !clicked;
-        }
-        public boolean isClicked() {
-            return clicked;
         }
     }
 }
