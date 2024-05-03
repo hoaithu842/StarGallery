@@ -63,6 +63,9 @@ public class ImagesViewAdapter extends RecyclerView.Adapter<ImagesViewAdapter.Vi
         });
     }
 
+    public void setImages(ArrayList<String> new_list) {
+        this.images_list = new_list;
+    }
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }

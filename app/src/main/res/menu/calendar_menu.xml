@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/date_option"
+        android:title="Date"/>
+    <item android:id="@+id/month_option"
+        android:title="Month of Year"/>
+    <item android:id="@+id/year_option"
+        android:title="Year"/>
+</menu>
