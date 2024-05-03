@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, albumsFragment).commit();
                     return true;
                 }
-                else if (item.getItemId() == R.id.scan_qr){
+                else if (item.getItemId() == R.id.utilities){
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, utilitiesFragment).commit();
 //                    qrHelper.scanQRCode();
                     return true;

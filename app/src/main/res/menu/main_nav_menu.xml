@@ -6,7 +6,10 @@
     <item android:id="@+id/show_albums"
         android:title="Albums"
         android:icon="@drawable/a_albums_icon"/>
-    <item android:id="@+id/scan_qr"
-        android:title="Scan QR"
-        android:icon="@drawable/a_qr_code_scanner"/>
+    <item android:id="@+id/profile"
+        android:title="Profile"
+        android:icon="@drawable/account_circle"/>
+    <item android:id="@+id/utilities"
+    android:title="Utilities"
+    android:icon="@drawable/a_more_btn"/>
 </menu>

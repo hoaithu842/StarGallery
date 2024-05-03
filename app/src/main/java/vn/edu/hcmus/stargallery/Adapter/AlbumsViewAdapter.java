@@ -47,7 +47,7 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
         } else {
 //            File album_cover = new File(albums.get(albums_name.get(position)).get(0));
 //            if(album_cover.exists()){
-                Glide.with(context).load(R.drawable.background).into(holder.album_cover);
+                Glide.with(context).load(R.drawable.no_image).into(holder.album_cover);
 //            }
         }
 

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/detail_image_layout">
+    android:id="@+id/detail_image_layout"
+    android:paddingTop="@dimen/status_bar_height">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/detail_nav_top"

@@ -106,7 +106,7 @@ public class AlbumsFragment extends Fragment {
                         String abName = input.getText().toString().trim();
                         if (!abName.isEmpty()) {
                             createAlbum(abName);
-//                            Log.d("TEN ALBUM", input.getText().toString());
+                            Log.d("TEN ALBUM", input.getText().toString());
                         } else {
                             Log.d("KO PHAI TEN ALBUM", "___");
                         }
@@ -167,11 +167,9 @@ public class AlbumsFragment extends Fragment {
 
     private void createAlbum(String albName) {
         DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
-        if (dbHelper.albumExists(albName)) {
+        if (dbHelper.createNewAlbum(albName)) {
             Log.d("DB", "Duplicated!");
         } else {
-            Log.d("DB", "Lam gi do di");
-//            dbHelper.createAlbum(albName);
             Log.d("DB", "Created! -> Notify");
         }
     }
