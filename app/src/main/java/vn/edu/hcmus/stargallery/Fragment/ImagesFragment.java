@@ -2,6 +2,7 @@ package vn.edu.hcmus.stargallery.Fragment;
 
 import static android.os.Environment.MEDIA_MOUNTED;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,9 +38,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 
 import vn.edu.hcmus.stargallery.Activity.MultiSelectImageActivity;
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
@@ -55,6 +62,17 @@ public class ImagesFragment extends Fragment {
     ImagesViewAdapter adapter;
     GridLayoutManager manager;
 
+    void updateLabel(ArrayList<String> list) {
+        TextView txt = layout.findViewById(R.id.totalImage);
+        if (list.size()==0) {
+            txt.setText("Empty");
+        } else if (list.size()==1) {
+            txt.setText(Integer.toString(list.size()) + " photo");
+        } else {
+            txt.setText(Integer.toString(list.size()) + " photos");
+        }
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +84,6 @@ public class ImagesFragment extends Fragment {
         adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
-                Log.d("GIF", images.get(position));
                 Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
                 if (filteredImages == null) {
                     intent.putExtra("image_path", images.get(position));
@@ -99,16 +116,7 @@ public class ImagesFragment extends Fragment {
                 filteredImages.add(imagePath);
             }
         }
-        Log.d("Searched: ", Integer.toString(filteredImages.size()));
-        // Update the adapter with the filtered list of images
-        TextView txt = layout.findViewById(R.id.totalImage);
-        if (filteredImages.size()==0) {
-            txt.setText("Empty");
-        } else if (filteredImages.size()==1) {
-            txt.setText(Integer.toString(filteredImages.size()) + " photo");
-        } else {
-            txt.setText(Integer.toString(filteredImages.size()) + " photos");
-        }
+        updateLabel(filteredImages);
         adapter.setImages(filteredImages);
         imagesView.getAdapter().notifyDataSetChanged();
     }
@@ -157,8 +165,7 @@ public class ImagesFragment extends Fragment {
         imagesView.setAdapter(adapter);
         imagesView.setLayoutManager(manager);
         loadImages();
-        TextView txt = layout.findViewById(R.id.totalImage);
-        txt.setText(Integer.toString(images.size()) + " photos");
+        updateLabel(images);
 
         EditText searchEditText = layout.findViewById(R.id.search_et);
         searchEditText.addTextChangedListener(new TextWatcher() {
@@ -170,19 +177,11 @@ public class ImagesFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Not used, but required for TextWatcher interface
-                Log.d("You typed: ", s.toString());
                 if (s.toString().length()==0) {
                     adapter.setImages(images);
                     imagesView.getAdapter().notifyDataSetChanged();
                     filteredImages = null;
-                    TextView txt = layout.findViewById(R.id.totalImage);
-                    if (images.size()==0) {
-                        txt.setText("Empty");
-                    } else if (images.size()==1) {
-                        txt.setText(Integer.toString(images.size()) + " photo");
-                    } else {
-                        txt.setText(Integer.toString(images.size()) + " photos");
-                    }
+                    updateLabel(images);
                 } else {
                     filterImages(s.toString());
                 }
@@ -195,9 +194,222 @@ public class ImagesFragment extends Fragment {
             }
         });
 
+        ImageButton calendarButton = layout.findViewById(R.id.calendar_button);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+                popupMenu.getMenuInflater().inflate(R.menu.calendar_menu, popupMenu.getMenu());
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.date_option) {
+                            performSearchByDay();
+                            return true;
+                        } else if (item.getItemId() == R.id.month_option) {
+                            performSearchByMonth();
+                            return true;
+                        } else if (item.getItemId() == R.id.year_option) {
+                            performSearchByYear();
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+
         return layout;
     }
+    private void performSearchByDay() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
+                String selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDayOfMonth);
+                filterImagesByDay(selectedDate);
+            }
+        }, year, month, dayOfMonth);
+
+        datePickerDialog.show();
+    }
+    private void filterImagesByDay(String selectedDate) {
+        ArrayList<String> filteredImages = new ArrayList<>();
+
+        for (String imagePath : images) {
+            ExifInterface exifInterface = null;
+            try {
+                exifInterface = new ExifInterface(new File(imagePath).getAbsolutePath());
+                String imageDateTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+                if (imageDateTime != null) {
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault());
+                    Date inputDate = inputFormat.parse(imageDateTime);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    String creationDate = sdf.format(inputDate);
+                    Date creationDateParsed = sdf.parse(creationDate);
+                    Date selectedDateParsed = sdf.parse(selectedDate);
+
+                    if (creationDateParsed != null && selectedDateParsed != null) {
+                        if (creationDateParsed.equals(selectedDateParsed)) {
+                            filteredImages.add(imagePath);
+                        } else if (creationDateParsed.before(selectedDateParsed)) {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            } catch (IOException | ParseException e) {
+                Log.e("ExifInterface", "Error reading image metadata", e);
+            } finally {
+                if (exifInterface != null) {
+//                    exifInterface.close();
+                }
+            }
+        }
+
+        this.filteredImages = filteredImages;
+
+        updateLabel(filteredImages);
+        adapter.setImages(filteredImages);
+        imagesView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void performSearchByMonth() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
+                        String selectedDate = String.format(Locale.getDefault(), "%04d-%02d", selectedYear, selectedMonth + 1);
+                        filterImagesByMonth(selectedDate);
+                    }
+                },
+                year,  // Set initial year
+                month, // Set initial month (0-based index)
+                1      // Set initial day of month (1-based)
+        );
+        datePickerDialog.getDatePicker().findViewById(Resources.getSystem().getIdentifier("day", "id", "android")).setVisibility(View.GONE);
+
+        datePickerDialog.show();
+    }
+    private void filterImagesByMonth(String selectedMonth) {
+        ArrayList<String> filteredImages = new ArrayList<>();
+        for (String imagePath : images) {
+            ExifInterface exifInterface = null;
+            try {
+                exifInterface = new ExifInterface(new File(imagePath).getAbsolutePath());
+                String imageDateTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+                if (imageDateTime != null) {
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault());
+                    Date inputDate = inputFormat.parse(imageDateTime);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+                    String creationDate = sdf.format(inputDate);
+                    Date creationDateParsed = sdf.parse(creationDate);
+                    Date selectedDateParsed = sdf.parse(selectedMonth);
+
+                    if (creationDateParsed != null && selectedDateParsed != null) {
+                        if (creationDateParsed.equals(selectedDateParsed)) {
+                            filteredImages.add(imagePath);
+                        } else if (creationDateParsed.before(selectedDateParsed)) {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            } catch (IOException | ParseException e) {
+                Log.e("ExifInterface", "Error reading image metadata", e);
+            } finally {
+                if (exifInterface != null) {
+//                exifInterface.close();
+                }
+            }
+        }
+
+        this.filteredImages = filteredImages;
+
+        updateLabel(filteredImages);
+        adapter.setImages(filteredImages);
+        imagesView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void performSearchByYear() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
+                        String selectedDate = String.format(Locale.getDefault(), "%04d", selectedYear);
+                        filterImagesByYear(selectedDate);
+                    }
+                },
+                year,  // Set initial year
+                0,     // Set initial month (0-based index)
+                1      // Set initial day of month (1-based)
+        );
+        datePickerDialog.getDatePicker().findViewById(Resources.getSystem().getIdentifier("day", "id", "android")).setVisibility(View.GONE);
+        datePickerDialog.getDatePicker().findViewById(Resources.getSystem().getIdentifier("month", "id", "android")).setVisibility(View.GONE);
+
+        // Show the date picker dialog
+        datePickerDialog.show();
+    }
+    private void filterImagesByYear(String selectedYear) {
+        ArrayList<String> filteredImages = new ArrayList<>();
+
+        for (String imagePath : images) {
+            ExifInterface exifInterface = null;
+            try {
+                exifInterface = new ExifInterface(new File(imagePath).getAbsolutePath());
+                String imageDateTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+                if (imageDateTime != null) {
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault());
+                    Date inputDate = inputFormat.parse(imageDateTime);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.getDefault());
+                    String creationYear = sdf.format(inputDate);
+
+                    if (creationYear.equals(selectedYear)) {
+                        filteredImages.add(imagePath);
+                    } else if (Integer.valueOf(creationYear) < Integer.valueOf(selectedYear)) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            } catch (IOException | ParseException e) {
+                Log.e("ExifInterface", "Error reading image metadata", e);
+            } finally {
+                if (exifInterface != null) {
+//                exifInterface.close();
+                }
+            }
+        }
+
+        this.filteredImages = filteredImages;
+
+        updateLabel(filteredImages);
+        adapter.setImages(filteredImages);
+        imagesView.getAdapter().notifyDataSetChanged();
+    }
     private void loadImages() {
         boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
         if (SDCard) {
