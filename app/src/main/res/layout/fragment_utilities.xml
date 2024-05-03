@@ -118,6 +118,35 @@
                     app:switchMinWidth="20dp"
                     />
             </RelativeLayout>
+            <RelativeLayout
+            android:id="@+id/show_trashcan"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/trash_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/b_delete_btn"
+                android:padding="12dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_centerVertical="true"
+                android:text="Trash"
+                android:textStyle="bold"
+                android:layout_toEndOf="@+id/trash_icon"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_next"
+                app:switchMinWidth="20dp"
+                />
+        </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

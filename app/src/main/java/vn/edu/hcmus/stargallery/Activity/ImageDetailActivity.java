@@ -162,6 +162,7 @@ public class ImageDetailActivity extends AppCompatActivity {
 
         nav_top = findViewById(R.id.detail_nav_top);
         Menu menu = nav_top.getMenu();
+        Log.d("ITEMMMMMMM", menu.size() + "");
         for (int i = 1; i < menu.size()-1; i++) {
             MenuItem menuItem = menu.getItem(i);
             menuItem.setEnabled(false);

@@ -151,9 +151,11 @@ public class MultiSelectImageActivity extends AppCompatActivity {
                         else{
                             db.insertMultiToAlbum(selectedAlbum, uniqueSet);
                         }
+
                     }
                 });
                 builder.show();
+
             }
         });
         toTrashBtn = findViewById(R.id.multi_deletebtn);
@@ -161,7 +163,7 @@ public class MultiSelectImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                Add to trash
-                db.insertMultiTrash(uniqueSet);
+                db.AddToTrashMultiImage(uniqueSet);
                 finish();
             }
         });
