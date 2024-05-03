@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
 import vn.edu.hcmus.stargallery.Fragment.AlbumsFragment;
 import vn.edu.hcmus.stargallery.Fragment.ImagesFragment;
+import vn.edu.hcmus.stargallery.Fragment.ProfileFragment;
 import vn.edu.hcmus.stargallery.Fragment.UtilitiesFragment;
 import vn.edu.hcmus.stargallery.Helper.QRHelper;
 
@@ -37,33 +38,14 @@ public class MainActivity extends AppCompatActivity {
     AlbumsFragment albumsFragment;
     ImagesFragment imagesFragment;
     UtilitiesFragment utilitiesFragment;
+    ProfileFragment profileFragment;
     static int PERMISSION_REQUEST_CODE=100;
 //    QRHelper qrHelper;
-    private void setStatusBarColorFromLayout() {
-        // For demonstration, let's assume you have a layout with ID "mainLayout"
-//        int backgroundColor = getResources().getColor(R.color.gradient); // Get color from your layout
-
-        // Set the status bar color
-        int statusBarColor = ContextCompat.getColor(this, R.color.black);
-        setStatusBarColor(statusBarColor);
-    }
-
-    private void setStatusBarColor(int color) {
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(color);
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-
-
-//        setStatusBarColorFromLayout();
 
 //        qrHelper = new QRHelper(this);
 //        qrHelper.setQRScanListener(this);
@@ -71,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         albumsFragment = new AlbumsFragment();
         imagesFragment = new ImagesFragment();
         utilitiesFragment = new UtilitiesFragment();
+        profileFragment = new ProfileFragment();
 
         checkPermissions();
         BottomNavigationView nav = findViewById(R.id.main_nav);
@@ -87,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
                 else if (item.getItemId() == R.id.utilities){
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, utilitiesFragment).commit();
 //                    qrHelper.scanQRCode();
+                    return true;
+                } else if (item.getItemId() == R.id.profile) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, profileFragment).commit();
                     return true;
                 }
                 return false;
