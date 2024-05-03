@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Title -->
     <TextView
@@ -21,86 +22,102 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <!-- Separator -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#CCCCCC"/>
-
         <LinearLayout
-            android:id="@+id/show_duplicated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="8dp"
-            tools:ignore="UseCompoundDrawables">
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/round_back_dark_blue"
+            android:padding="12dp">
+            <RelativeLayout
+                android:id="@+id/show_duplicated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/duplicated_iv"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/b_duplicate"
+                    android:padding="12dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_centerVertical="true"
+                    android:text="Show duplicates"
+                    android:textStyle="bold"
+                    android:layout_toEndOf="@+id/duplicated_iv"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_next"
+                    app:switchMinWidth="20dp"
+                    />
+            </RelativeLayout>
 
-            <!-- Icon -->
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/b_duplicate"
-                android:contentDescription="Duplicate Icon"/>
-
-            <!-- Text -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show Duplicates"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp"/>
-
+            <RelativeLayout
+                android:id="@+id/show_faces_detected"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/faces_detected_iv"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/face_detect_icon"
+                    android:padding="12dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_centerVertical="true"
+                    android:text="Face detect"
+                    android:textStyle="bold"
+                    android:layout_toEndOf="@+id/faces_detected_iv"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_next"
+                    app:switchMinWidth="20dp"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/show_location"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/dark_mode_iv"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_location"
+                    android:padding="12dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_centerVertical="true"
+                    android:text="Location"
+                    android:textStyle="bold"
+                    android:layout_toEndOf="@+id/dark_mode_iv"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_next"
+                    app:switchMinWidth="20dp"
+                    />
+            </RelativeLayout>
         </LinearLayout>
-
-        <!-- Separator -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#CCCCCC"/>
-
-        <LinearLayout
-            android:id="@+id/show_faces_detected"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="8dp"
-            tools:ignore="UseCompoundDrawables">
-
-            <!-- Icon -->
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/face_detect_icon"
-                android:contentDescription="Duplicate Icon"/>
-
-            <!-- Text -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Show Faces Detected"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp"/>
-
-        </LinearLayout>
-
-        <!-- Separator -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#CCCCCC"/>
-
     </LinearLayout>
-
-    <!-- Add more rows of spreading options as needed -->
-
-
 </LinearLayout>
-
-<!--    android:layout_marginStart="16dp"-->
-<!--    android:layout_marginEnd="8dp"-->
-<!--    android:layout_marginBottom="8dp"-->

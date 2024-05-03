@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 
 import vn.edu.hcmus.stargallery.Activity.FaceDetectActivity;
 import vn.edu.hcmus.stargallery.Activity.ImageDuplicateActivity;
+import vn.edu.hcmus.stargallery.Activity.LocationActivity;
 import vn.edu.hcmus.stargallery.R;
 
 public class UtilitiesFragment extends Fragment {
@@ -53,7 +55,7 @@ public class UtilitiesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout = (LinearLayout) inflater.inflate(R.layout.fragment_utilities, container, false);
 
-        LinearLayout duplicate_button = layout.findViewById(R.id.show_duplicated);
+        RelativeLayout duplicate_button = layout.findViewById(R.id.show_duplicated);
         duplicate_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,13 +68,25 @@ public class UtilitiesFragment extends Fragment {
         });
 
         ArrayList<String> album = loadAlbums();
-        LinearLayout familiar_pp_button = layout.findViewById(R.id.show_faces_detected);
+        RelativeLayout familiar_pp_button = layout.findViewById(R.id.show_faces_detected);
         familiar_pp_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), FaceDetectActivity.class);
                 intent.putExtra("album_name", "Faces Detected");
                 intent.putStringArrayListExtra("images_list", album);
+
+                startActivity(intent);
+            }
+        });
+
+        RelativeLayout location_button = layout.findViewById(R.id.show_location);
+        location_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LocationActivity.class);
+//                intent.putExtra("album_name", "Faces Detected");
+                intent.putStringArrayListExtra("images_list", images);
 
                 startActivity(intent);
             }
