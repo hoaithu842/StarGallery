@@ -1,0 +1,28 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Scanned Text"
+        android:textIsSelectable="true"
+        android:minLines="5"
+        android:maxLines="40"
+        android:gravity="start|top"
+        android:padding="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editText"
+        android:orientation="horizontal"
+        android:gravity="end">
+    </LinearLayout>
+
+</RelativeLayout>

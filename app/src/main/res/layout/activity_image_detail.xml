@@ -9,7 +9,6 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/detail_nav_top"
-        android:layout_marginTop="@dimen/status_bar_height"
         android:layout_width="match_parent"
         android:layout_height="58dp"
         app:labelVisibilityMode="unlabeled"
