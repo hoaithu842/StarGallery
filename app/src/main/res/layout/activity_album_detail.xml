@@ -52,10 +52,11 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/a_add_album"/>
             <ImageButton
+                android:id="@+id/sync_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/a_add_album"/>
+                android:background="@drawable/icon_sync"/>
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
