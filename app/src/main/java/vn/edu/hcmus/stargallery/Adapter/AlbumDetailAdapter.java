@@ -25,6 +25,7 @@ public class AlbumDetailAdapter extends RecyclerView.Adapter<AlbumDetailAdapter.
     private OnClickListener onClickListener;
     private OnLongClickListener onLongClickListener;
 
+
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(context).inflate(R.layout.item_image,null,true);
         return new ViewHolder(view);
@@ -76,7 +77,9 @@ public class AlbumDetailAdapter extends RecyclerView.Adapter<AlbumDetailAdapter.
 
     public AlbumDetailAdapter(Context context, ArrayList<String> images_list) {
         this.context = context;
+
         this.images_list = images_list;
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

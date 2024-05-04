@@ -130,7 +130,7 @@ public class ImageDetailActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        EdgeToEdge.enable(this);
+//        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
@@ -415,10 +415,8 @@ public class ImageDetailActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("itemDeleted", currentIndex);
-                setResult(Activity.RESULT_OK, resultIntent);
                 images_list.remove(getPosition(currentIndex));
-//                dbHelper.insertTrash(image_path);
-//                Log.d("do", "do");
+                dbHelper.AddToTrashImage(image_path);
                 finish();
             }
         });

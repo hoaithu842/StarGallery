@@ -1,6 +1,7 @@
 package vn.edu.hcmus.stargallery.Activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,6 +18,7 @@ import 	android.text.SpannableStringBuilder;
 import androidx.activity.EdgeToEdge;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,13 +42,15 @@ public class TrashCanActivity extends AppCompatActivity {
     GridLayoutManager manager;
     RecyclerView imagesView;
     ImageButton backBtn;
-    ImageButton addImgBtn;
+    ImageButton recoverBtn;
+    ImageButton delBtn;
+
     DatabaseHelper db;
     public void onCreate(Bundle savedInstanceState) {
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trash_can);
-        db = new DatabaseHelper(getApplication());
+        db = new DatabaseHelper(this.getApplication());
         images = new ArrayList<>();
         Intent intent = getIntent();
 
@@ -57,20 +61,13 @@ public class TrashCanActivity extends AppCompatActivity {
             adapter = new AlbumDetailAdapter(this, images);
             manager = new GridLayoutManager(this,4);
 
-            imagesView = findViewById(R.id.album_images_view);
+            imagesView = findViewById(R.id.trashcan_images_view);
             imagesView.setAdapter(adapter);
             imagesView.setLayoutManager(manager);
 
             TextView txt = findViewById(R.id.totalImage);
             txt.setText(Integer.toString(images.size()) + " photos");
         }
-        backBtn = findViewById(R.id.album_detail_back_btn);
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         adapter.setOnClickListener(new AlbumDetailAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
@@ -92,7 +89,61 @@ public class TrashCanActivity extends AppCompatActivity {
             }
         });
 
+        backBtn = findViewById(R.id.trash_back_btn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
+        recoverBtn = findViewById(R.id.recover_btn);
+        recoverBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(String img: images)
+                    db.removeImageFromTrash(img);
+                finish();
+            }
+        });
+        delBtn = findViewById(R.id.permanent_delete_btn);
+        delBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(TrashCanActivity.this);
+                confirmDialog.setTitle("Delete photo");
+                confirmDialog.setMessage("Do you want to delete all photos permanently?");
+                confirmDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        for(String imagePath: images){
+                            if (new File(imagePath).exists()) {
+                                int deleted = getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                        MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
+                                if (deleted == 1) {
+                                    // Image deleted successfully
+                                    Log.i("ImageDelete", "Image deleted: " + imagePath);
+                                } else {
+                                    Log.w("ImageDelete", "Failed to delete image: " + imagePath);
+                                }
+                            } else {
+                                Log.w("ImageDelete", "Image path not found: " + imagePath);
+                            }
+                        }
+                        images.clear();
+                        imagesView.getAdapter().notifyDataSetChanged();
+                        finish();
+                    }
+                });
+                confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                confirmDialog.show();
+            }
+        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -108,6 +159,7 @@ public class TrashCanActivity extends AppCompatActivity {
                 // Handle item deletion
                 // Check if the image path exists before deletion (avoid potential errors)
                 if (new File(imagePath).exists()) {
+                    db.removeImageFromTrash(imagePath);
                     int deleted = getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
                     if (deleted == 1) {

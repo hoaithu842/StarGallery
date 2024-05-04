@@ -137,7 +137,7 @@ public class DatabaseHelper {
         try {
             db.beginTransaction();
             try {
-                String sql = "SELECT * FROM " + TABLE_FAVORITE + " WHERE PATH='" + path + "');";
+                String sql = "SELECT * FROM " + TABLE_FAVORITE + " WHERE PATH='" + path + "'";
                 Cursor c1 = db.rawQuery(sql, null);
                 c1.moveToPosition(-1);
                 while (c1.moveToNext()) {
@@ -158,7 +158,7 @@ public class DatabaseHelper {
         try {
             db.beginTransaction();
             try {
-                String sql = "DELETE FROM " + TABLE_FAVORITE + " WHERE PATH='" + path + "');";
+                String sql = "DELETE FROM " + TABLE_FAVORITE + " WHERE PATH='" + path + "'";
                 db.execSQL(sql);
                 db.setTransactionSuccessful();
             } catch (SQLiteException e) {
@@ -177,6 +177,8 @@ public class DatabaseHelper {
         db.beginTransaction();
         try {
             db.execSQL("INSERT INTO " + TABLE_TRASH + "(PATH) values ('" + path + "');");
+            db.execSQL("DELETE FROM " + TABLE_FAVORITE + " WHERE PATH='" + path + "'");
+            db.execSQL("DELETE FROM " + ALBUMS + " WHERE PATH='" + path + "'");
             db.setTransactionSuccessful(); //commit your changes
         } catch (SQLiteException e) {
             //
@@ -259,7 +261,7 @@ public class DatabaseHelper {
         try {
             db.beginTransaction();
             try {
-                String sql = "DELETE FROM " + TABLE_TRASH + " WHERE PATH='" + path + "');";
+                String sql = "DELETE FROM " + TABLE_TRASH + " WHERE PATH='" + path + "'";
                 db.execSQL(sql);
                 db.setTransactionSuccessful();
             } catch (SQLiteException e) {
@@ -429,12 +431,9 @@ public class DatabaseHelper {
             db.beginTransaction();
             try {
 //                String sql = "SELECT * FROM " + ALBUMS;
-
-
-                String sql = "SELECT * FROM " + ALBUMS + " JOIN " + ALBUM_NAMES
-                        + " ON " + ALBUMS + ".ALBUM_ID = " + ALBUM_NAMES + ".ID WHERE "
-                        + ALBUM_NAMES + ".NAME = '" + ALBUM_NAME + "'";
-
+                String sql = "SELECT * FROM " + ALBUMS + " JOIN " + ALBUM_NAMES +
+                        " ON " + ALBUMS + ".ALBUM_ID = " + ALBUM_NAMES + ".ID WHERE " +
+                        ALBUM_NAMES + ".NAME = '" + ALBUM_NAME + "'";
                 //HOCSINH.MaLop=LOP.MaLop";
                 Cursor c1 = db.rawQuery(sql, null);
                 c1.moveToPosition(-1);

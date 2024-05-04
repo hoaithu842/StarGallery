@@ -23,8 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import vn.edu.hcmus.stargallery.Activity.FaceDetectActivity;
+import vn.edu.hcmus.stargallery.Activity.FavoriteActivity;
 import vn.edu.hcmus.stargallery.Activity.ImageDuplicateActivity;
 import vn.edu.hcmus.stargallery.Activity.LocationActivity;
+import vn.edu.hcmus.stargallery.Activity.TrashCanActivity;
 import vn.edu.hcmus.stargallery.R;
 
 public class UtilitiesFragment extends Fragment {
@@ -91,7 +93,26 @@ public class UtilitiesFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+        RelativeLayout trash_button = layout.findViewById(R.id.show_trashcan);
+        trash_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TrashCanActivity.class);
+//                intent.putExtra("album_name", "Faces Detected");
+//                intent.putStringArrayListExtra("images_list", images);
+                startActivity(intent);
+            }
+        });
+        RelativeLayout fav_btn = layout.findViewById(R.id.show_favorite);
+        fav_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FavoriteActivity.class);
+//                intent.putExtra("album_name", "Faces Detected");
+//                intent.putStringArrayListExtra("images_list", images);
+                startActivity(intent);
+            }
+        });
         loadImages();
 //        loadSelfies();
         return layout;

@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -46,12 +47,12 @@ public class AlbumsFragment extends Fragment {
     LinearLayout layout;
     static int PERMISSION_REQUEST_CODE = 100;
     HashMap<String, ArrayList<String>> albums;
+    ArrayList<String> sorted_albums;
     AlbumsViewAdapter adapter;
     GridLayoutManager manager;
 //    AppCompatImageButton addAlbumBtn;
     ImageButton addAlbumBtn;
     boolean shouldExecuteOnResume = false;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         shouldExecuteOnResume = false;
@@ -63,7 +64,7 @@ public class AlbumsFragment extends Fragment {
         adapter.setOnClickListener(new AlbumsViewAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
-                String album_name = new ArrayList<>(albums.keySet()).get(position);
+                String album_name = sorted_albums.get(position);
                 Log.d("ab_name", album_name);
                 Log.d("ab_", Integer.toString(albums.get(album_name).size()));
                 Intent intent = new Intent(getActivity(), AlbumDetailActivity.class);
@@ -128,10 +129,9 @@ public class AlbumsFragment extends Fragment {
 
     private void loadAlbums() {
         DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
-
-        ArrayList<String> imagesList = dbHelper.getFavoriteImages();
-        albums.put("Favorites", imagesList);
-
+        ArrayList<String> imagesList;//= dbHelper.getFavoriteImages();
+//        albums.put("Favorites", imagesList);
+        ArrayList<String> deleted = dbHelper.getTrashImages();
         boolean SDCard = Environment.getExternalStorageState().equals(MEDIA_MOUNTED);
         if (SDCard) {
             final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
@@ -154,14 +154,19 @@ public class AlbumsFragment extends Fragment {
                     imagesList.add(imagePath);
                 }
             }
+            for(String album: albums.keySet()){
+                albums.get(album).removeAll(deleted);
+            }
         }
 
         ArrayList<String> albumNames = dbHelper.getAlbumNames();
         for (int i=0; i<albumNames.size(); i++) {
             imagesList = dbHelper.getAlbumImages(albumNames.get(i));
+//            imagesList.removeAll(deleted);
             albums.put(albumNames.get(i), imagesList);
         }
-
+        sorted_albums = new ArrayList<>(albums.keySet());
+        Collections.sort( this.sorted_albums);
         albumsView.getAdapter().notifyDataSetChanged();
     }
 

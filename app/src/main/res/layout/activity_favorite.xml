@@ -16,7 +16,7 @@
             android:layout_height="35dp"
             android:layout_gravity="center"
             android:layout_margin="5sp"
-            android:id="@+id/trash_back_btn"
+            android:id="@+id/favorite_back_btn"
             android:background="@drawable/_back_btn"/>
 
         <TextView
@@ -30,13 +30,15 @@
             android:text="Total o day"
             android:textColor="@color/gray"/>
             <ImageButton
-                android:id="@+id/recover_btn"
+                android:visibility="invisible"
+                android:id="@+id/a_btn"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_margin="5sp"
                 android:background="@drawable/recover_image"/>
             <ImageButton
-                android:id="@+id/permanent_delete_btn"
+                android:visibility="invisible"
+                android:id="@+id/not_a_btn"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_margin="5sp"
@@ -44,7 +46,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/trashcan_images_view"
+        android:id="@+id/favorite_images_view"
         android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"

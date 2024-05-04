@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import vn.edu.hcmus.stargallery.R;
@@ -36,6 +37,7 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         this.albums_name = new ArrayList<>(albums.keySet());
+        Collections.sort( this.albums_name);
         holder.album_name.setText(albums_name.get(position));
         holder.album_quant.setText(Integer.toString(albums.get(albums_name.get(position)).size()) + " images");
 
@@ -79,6 +81,7 @@ public class AlbumsViewAdapter extends RecyclerView.Adapter<AlbumsViewAdapter.Vi
         this.context = context;
         this.albums = albums;
         this.albums_name = new ArrayList<>(albums.keySet());
+        Collections.sort( this.albums_name);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -4,6 +4,7 @@ import static android.os.Environment.MEDIA_MOUNTED;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -50,6 +51,7 @@ import java.util.Locale;
 import vn.edu.hcmus.stargallery.Activity.MultiSelectImageActivity;
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
+import vn.edu.hcmus.stargallery.Helper.DatabaseHelper;
 import vn.edu.hcmus.stargallery.R;
 
 public class ImagesFragment extends Fragment {
@@ -61,7 +63,7 @@ public class ImagesFragment extends Fragment {
     ArrayList<String> filteredImages = null;
     ImagesViewAdapter adapter;
     GridLayoutManager manager;
-
+    DatabaseHelper db;
     void updateLabel(ArrayList<String> list) {
         TextView txt = layout.findViewById(R.id.totalImage);
         if (list.size()==0) {
@@ -80,6 +82,7 @@ public class ImagesFragment extends Fragment {
         images = new ArrayList<>();
         adapter = new ImagesViewAdapter(getContext(),images);
         manager = new GridLayoutManager(getContext(),4);
+        db = new DatabaseHelper((Application) requireActivity().getApplicationContext());
 
         adapter.setOnClickListener(new ImagesViewAdapter.OnClickListener() {
             @Override
@@ -121,34 +124,6 @@ public class ImagesFragment extends Fragment {
         imagesView.getAdapter().notifyDataSetChanged();
     }
 
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_DELETE_ITEM && resultCode == Activity.RESULT_OK) {
-
-            Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
-            if (itemDeleted >= 0 && itemDeleted < images.size()) {
-                String imagePath = images.get(itemDeleted);
-                images.remove(images.get(itemDeleted));
-                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
-                // Handle item deletion
-                // Check if the image path exists before deletion (avoid potential errors)
-                if (new File(imagePath).exists()) {
-                    int deleted = getContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
-                    if (deleted == 1) {
-                        // Image deleted successfully
-                        Log.i("ImageDelete", "Image deleted: " + imagePath);
-                    } else {
-                        Log.w("ImageDelete", "Failed to delete image: " + imagePath);
-                    }
-                } else {
-                    Log.w("ImageDelete", "Image path not found: " + imagePath);
-                }
-            }
-        }
-    }
 
     @Override
     public void onResume() {
@@ -422,6 +397,8 @@ public class ImagesFragment extends Fragment {
                 int colunmindex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 images.add(cursor.getString(colunmindex));
             }
+            ArrayList<String> deleted = db.getTrashImages();
+            images.removeAll(deleted);
             imagesView.getAdapter().notifyDataSetChanged();
         }
     }
