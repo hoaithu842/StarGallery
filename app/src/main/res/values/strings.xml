@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Star Gallery</string>
+    <string name="web_client_id">220480641841-pap2lcm4g323i0sbj6jndcm90el5uvpp.apps.googleusercontent.com</string>
     <string name="todo">TO DO</string>
 </resources>

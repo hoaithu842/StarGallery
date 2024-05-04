@@ -59,10 +59,19 @@
                     app:switchMinWidth="20dp"
                     />
             </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/round_back_dark_blue"
+            android:padding="12dp">
 
             <RelativeLayout
                 android:id="@+id/show_faces_detected"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
@@ -89,9 +98,18 @@
                     app:switchMinWidth="20dp"
                     />
             </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/round_back_dark_blue"
+            android:padding="12dp">
             <RelativeLayout
                 android:id="@+id/show_location"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
@@ -118,9 +136,18 @@
                     app:switchMinWidth="20dp"
                     />
             </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/round_back_dark_blue"
+            android:padding="12dp">
             <RelativeLayout
             android:id="@+id/show_trashcan"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
@@ -147,9 +174,18 @@
                 app:switchMinWidth="20dp"
                 />
         </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:background="@drawable/round_back_dark_blue"
+            android:padding="12dp">
             <RelativeLayout
             android:id="@+id/show_favorite"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView

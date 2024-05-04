@@ -64,6 +64,8 @@ public class ImagesFragment extends Fragment {
     ImagesViewAdapter adapter;
     GridLayoutManager manager;
     DatabaseHelper db;
+    private boolean isFiltered = false;
+
     void updateLabel(ArrayList<String> list) {
         TextView txt = layout.findViewById(R.id.totalImage);
         if (list.size()==0) {
@@ -173,30 +175,43 @@ public class ImagesFragment extends Fragment {
         calendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-                popupMenu.getMenuInflater().inflate(R.menu.calendar_menu, popupMenu.getMenu());
+                if (isFiltered) {
+                    calendarButton.setImageResource(R.drawable.icon_calendar);
+                    adapter.setImages(images);
+                    filteredImages = null;
+                    updateLabel(images);
+                    imagesView.getAdapter().notifyDataSetChanged();
+                } else {
+                    // If images are not filtered, show the popup menu
+                    PopupMenu popupMenu = new PopupMenu(requireContext(), view);
+                    popupMenu.getMenuInflater().inflate(R.menu.calendar_menu, popupMenu.getMenu());
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.date_option) {
-                            performSearchByDay();
-                            return true;
-                        } else if (item.getItemId() == R.id.month_option) {
-                            performSearchByMonth();
-                            return true;
-                        } else if (item.getItemId() == R.id.year_option) {
-                            performSearchByYear();
-                            return true;
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getItemId() == R.id.date_option) {
+                                performSearchByDay();
+                                return true;
+                            } else if (item.getItemId() == R.id.month_option) {
+                                performSearchByMonth();
+                                return true;
+                            } else if (item.getItemId() == R.id.year_option) {
+                                performSearchByYear();
+                                return true;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popupMenu.show();
+                    });
+                    popupMenu.show();
+                }
             }
         });
 
         return layout;
+    }
+    void updateCalendarIcon() {
+        ImageButton calendarButton = layout.findViewById(R.id.calendar_button);
+        calendarButton.setImageResource(R.drawable.b_delete_btn);
     }
     private void performSearchByDay() {
         Calendar calendar = Calendar.getInstance();
@@ -209,6 +224,8 @@ public class ImagesFragment extends Fragment {
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
                 String selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDayOfMonth);
                 filterImagesByDay(selectedDate);
+                isFiltered = true;
+                updateCalendarIcon();
             }
         }, year, month, dayOfMonth);
 
@@ -271,6 +288,8 @@ public class ImagesFragment extends Fragment {
                     public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
                         String selectedDate = String.format(Locale.getDefault(), "%04d-%02d", selectedYear, selectedMonth + 1);
                         filterImagesByMonth(selectedDate);
+                        isFiltered = true;
+                        updateCalendarIcon();
                     }
                 },
                 year,  // Set initial year
@@ -336,6 +355,8 @@ public class ImagesFragment extends Fragment {
                     public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
                         String selectedDate = String.format(Locale.getDefault(), "%04d", selectedYear);
                         filterImagesByYear(selectedDate);
+                        isFiltered = true;
+                        updateCalendarIcon();
                     }
                 },
                 year,  // Set initial year
