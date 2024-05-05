@@ -2,16 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/status_bar_height">
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/multi_backbtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center"
             android:background="@drawable/_back_btn"
@@ -21,27 +20,31 @@
             android:layout_height="40dp"
             android:layout_weight="1"/>
         <ImageButton
-            android:id="@+id/multi_add_album_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/slideshow_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center"
-            android:background="@drawable/a_add_album"
+            android:background="@drawable/icon_slideshow"
+            android:contentDescription="@string/todo" />
+        <ImageButton
+            android:id="@+id/multi_add_album_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:background="@drawable/icon_add"
             android:contentDescription="@string/todo" />
         <ImageButton
             android:id="@+id/multi_deletebtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:gravity="center"
             android:background="@drawable/b_delete_btn"
             android:contentDescription="@string/todo" />
     </LinearLayout>
-    <TextView
-        android:id="@+id/multi_select_album_choice"
-        android:layout_width="200dp"
-        android:layout_gravity="center"
-        android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/multi_images_view"
         android:layout_width="match_parent"

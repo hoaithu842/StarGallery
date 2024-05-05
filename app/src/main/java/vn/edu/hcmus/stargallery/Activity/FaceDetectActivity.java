@@ -55,6 +55,9 @@ public class FaceDetectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_detail);
 
+        TextView totalImage = findViewById(R.id.totalImage);
+        totalImage.setVisibility(View.GONE);
+
         FaceDetectorOptions highAccuracyOpts =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
@@ -104,6 +107,18 @@ public class FaceDetectActivity extends AppCompatActivity {
             }
         });
 
+//        adapter.setOnClickListener(new PersonAvatarAdapter.OnClickListener() {
+//            @Override
+//            public void onClick(int position) {
+//                Intent intent = new Intent(FaceDetectActivity.this, ImageDetailActivity.class);
+//                Log.d("Position", Integer.toString(position));
+//                intent.putExtra("image_path", personImageMap.get(position).get(0));
+//                intent.putStringArrayListExtra("images_list", personImageMap.get(position));
+//                startActivity(intent);
+//            }
+//        });
+
+
         loadFaces();
     }
 
@@ -133,8 +148,10 @@ public class FaceDetectActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<List<Face>>() {
                         @Override
                         public void onSuccess(List<Face> faces) {
+                            Log.d("Face", Integer.toString(faces.size()));
                             for (Face face : faces) {
                                 String faceId = String.valueOf(face.getTrackingId());
+                                Log.d("faceId", faceId);
                                 if (!personImageMap.containsKey(faceId)) {
                                     personImageMap.put(faceId, new ArrayList<>());
                                     Bitmap croppedFaceBitmap = getCroppedFaceBitmap(bitmap, face);

@@ -59,23 +59,3 @@
         android:layout_weight="2"/>
 
 </LinearLayout>
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:orientation="horizontal"-->
-<!--android:gravity="center">-->
-<!--<ImageButton-->
-<!--    android:layout_width="50dp"-->
-<!--    android:layout_height="50dp"-->
-<!--    android:layout_margin="2dp"-->
-<!--    android:background="@drawable/a_add_album"/>-->
-<!--<ImageButton-->
-<!--    android:layout_width="50dp"-->
-<!--    android:layout_height="50dp"-->
-<!--    android:layout_margin="2dp"-->
-<!--    android:background="@drawable/a_add_album"/>-->
-<!--<ImageButton-->
-<!--    android:layout_width="50dp"-->
-<!--    android:layout_height="50dp"-->
-<!--    android:layout_margin="2dp"-->
-<!--    android:background="@drawable/a_add_album"/>        </LinearLayout>-->

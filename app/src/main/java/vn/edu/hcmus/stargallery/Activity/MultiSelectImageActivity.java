@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -85,11 +86,7 @@ public class MultiSelectImageActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("TOTAL",Integer.toString(uniqueSet.size()));
-                for(String i:uniqueSet){
-                    Log.d("ITEM IN HERE", i);
-                }
-//                finish();
+                finish();
             }
         });
 
@@ -199,8 +196,24 @@ public class MultiSelectImageActivity extends AppCompatActivity {
             }
         });
 
-
+        ImageButton slideshowBtn = findViewById(R.id.slideshow_btn);
+        slideshowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startSlideshow();
+            }
+        });
     }
+    private void startSlideshow() {
+        // Check if there are selected images
+        if (uniqueSet.isEmpty()) {
+            Toast.makeText(MultiSelectImageActivity.this, "No images selected for slideshow", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-
+        // Start the slideshow with selected images
+        Intent intent = new Intent(MultiSelectImageActivity.this, SlideshowActivity.class);
+        intent.putStringArrayListExtra("selected_images", uniqueSet);
+        startActivity(intent);
+    }
 }

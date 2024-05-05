@@ -49,6 +49,9 @@ public class ImageDuplicateActivity extends AppCompatActivity {
         images = new ArrayList<>();
         duplicated = new ArrayList<>();
 
+        TextView totalImage = findViewById(R.id.totalImage);
+        totalImage.setVisibility(View.GONE);
+
         Intent intent = getIntent();
         if (intent != null) {
             album_name = intent.getStringExtra("album_name");
@@ -69,6 +72,16 @@ public class ImageDuplicateActivity extends AppCompatActivity {
 //            TextView txt = findViewById(R.id.totalImage);
 //            txt.setText(Integer.toString(images.size()) + " photos");
         }
+
+        adapter.setOnClickListener(new AlbumDetailAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position) {
+                Intent intent = new Intent(ImageDuplicateActivity.this, ImageDetailActivity.class);
+                intent.putExtra("image_path", duplicated.get(position));
+                intent.putStringArrayListExtra("images_list", duplicated);
+                startActivity(intent);
+            }
+        });
 
         backBtn = findViewById(R.id.album_detail_back_btn);
         backBtn.setOnClickListener(new View.OnClickListener() {

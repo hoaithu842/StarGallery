@@ -96,12 +96,9 @@ public class AlbumDetailActivity extends AppCompatActivity {
                 intent.putExtra("album_name", album_name);
                 intent.putExtra("image_path", images.get(position));
                 intent.putStringArrayListExtra("images_list", images);
-                Toast.makeText(getApplicationContext(), "LONGGGG", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
         });
-
-
     }
 
 
@@ -109,7 +106,6 @@ public class AlbumDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("AlbumDetailActivity", "onResume");
-
         // Check if there are changes to the images list while the activity was paused or stopped
         int previousSize = images.size();
         images.removeAll(dbHelper.getTrashImages());
