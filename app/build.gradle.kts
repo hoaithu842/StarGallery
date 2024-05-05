@@ -34,9 +34,11 @@ android {
 }
 
 dependencies {
+    def activity_version = "1.9.0"
+
+
     implementation ("com.google.android.material:material:1.11.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -52,4 +54,6 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxjava:2.1.0")
     implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation "androidx.activity:activity-ktx:$activity_version"
 }
