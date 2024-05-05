@@ -118,6 +118,7 @@ public class TrashCanActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         for(String imagePath: images){
                             if (new File(imagePath).exists()) {
+                                db.removeImageFromTrash(imagePath);
                                 int deleted = getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                         MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
                                 if (deleted == 1) {
@@ -146,35 +147,34 @@ public class TrashCanActivity extends AppCompatActivity {
         });
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_DELETE_ITEM && resultCode == Activity.RESULT_OK) {
-
-            Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
-            if (itemDeleted >= 0 && itemDeleted < images.size()) {
-                String imagePath = images.get(itemDeleted);
-                images.remove(images.get(itemDeleted));
-                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
-                // Handle item deletion
-                // Check if the image path exists before deletion (avoid potential errors)
-                if (new File(imagePath).exists()) {
-                    db.removeImageFromTrash(imagePath);
-                    int deleted = getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
-                    if (deleted == 1) {
-                        // Image deleted successfully
-                        Log.i("ImageDelete", "Image deleted: " + imagePath);
-                    } else {
-                        Log.w("ImageDelete", "Failed to delete image: " + imagePath);
-                    }
-                } else {
-                    Log.w("ImageDelete", "Image path not found: " + imagePath);
-                }
-
-
-            }
-        }
-    }
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == REQUEST_DELETE_ITEM && resultCode == Activity.RESULT_OK) {
+//
+//            Integer itemDeleted = data.getIntExtra("itemDeleted", 0);
+//            if (itemDeleted >= 0 && itemDeleted < images.size()) {
+//                String imagePath = images.get(itemDeleted);
+//                images.remove(images.get(itemDeleted));
+//                imagesView.getAdapter().notifyItemRemoved(itemDeleted);
+//                // Handle item deletion
+//                // Check if the image path exists before deletion (avoid potential errors)
+//                if (new File(imagePath).exists()) {
+//                    db.removeImageFromTrash(imagePath);
+//                    int deleted = getApplicationContext().getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                            MediaStore.Images.Media.DATA + " = ?", new String[]{imagePath});
+//                    if (deleted == 1) {
+//                        // Image deleted successfully
+//                        Log.i("ImageDelete", "Image deleted: " + imagePath);
+//                    } else {
+//                        Log.w("ImageDelete", "Failed to delete image: " + imagePath);
+//                    }
+//                } else {
+//                    Log.w("ImageDelete", "Image path not found: " + imagePath);
+//                }
+//
+//            }
+//        }
+//    }
 
 }
