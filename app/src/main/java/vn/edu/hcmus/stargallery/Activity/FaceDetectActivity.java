@@ -78,7 +78,7 @@ public class FaceDetectActivity extends AppCompatActivity {
 
             //Load 50 anh thui
             if (duplicated != null && !duplicated.isEmpty()) {
-                for (int i = 0; i < Math.min(duplicated.size(), 50); i++) {
+                for (int i = 0; i < Math.min(duplicated.size(), 30); i++) {
                     images.add(duplicated.get(i));
                 }
             }

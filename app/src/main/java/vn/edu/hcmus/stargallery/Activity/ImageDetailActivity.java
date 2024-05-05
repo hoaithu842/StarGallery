@@ -2,7 +2,10 @@ package vn.edu.hcmus.stargallery.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +23,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -40,9 +44,17 @@ import androidx.core.content.FileProvider;
 import androidx.core.net.ParseException;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import com.ortiz.touchview.TouchImageView;
 
 import java.io.File;
@@ -166,7 +178,7 @@ public class ImageDetailActivity extends AppCompatActivity {
         nav_top = findViewById(R.id.detail_nav_top);
         Menu menu = nav_top.getMenu();
         Log.d("ITEMMMMMMM", menu.size() + "");
-        for (int i = 1; i < menu.size()-1; i++) {
+        for (int i = 1; i < menu.size()-2; i++) {
             MenuItem menuItem = menu.getItem(i);
             menuItem.setEnabled(false);
         }
@@ -182,6 +194,8 @@ public class ImageDetailActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                } else if (item.getItemId() == R.id.scanTextBtn) {
+                    onScanTextBtnClick();
                 }
 
                 return false;
@@ -230,6 +244,92 @@ public class ImageDetailActivity extends AppCompatActivity {
         //Pinch gesture
         SGD_1 = new ScaleGestureDetector(this, new ScaleListener());
     }
+    public void onScanTextBtnClick() {
+        Log.d("scanning", "scanning");
+        Bitmap imageBitmap = BitmapFactory.decodeFile(image_path);
+
+        TextRecognizer recognizer =
+                TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+        int rotationDegree = getRotationDegree(image_path);
+        InputImage image = InputImage.fromBitmap(imageBitmap, rotationDegree);
+
+        Task<Text> result =
+                recognizer.process(image)
+                        .addOnSuccessListener(new OnSuccessListener<Text>() {
+                            @Override
+                            public void onSuccess(Text visionText) {
+                                Log.d("Hehe", "Success");
+                                String resultText = visionText.getText();
+                                Log.d("Scanned Text", resultText);
+
+                                // Create a custom layout for the AlertDialog
+                                LayoutInflater inflater = LayoutInflater.from(ImageDetailActivity.this);
+                                View dialogView = inflater.inflate(R.layout.dialog_copy_text, null);
+
+                                // Initialize the EditText with the scanned text
+                                TextView textView = dialogView.findViewById(R.id.editText);
+                                textView.setText(resultText);
+
+                                // Create the AlertDialog
+                                AlertDialog.Builder builder = new AlertDialog.Builder(ImageDetailActivity.this);
+                                builder.setView(dialogView);
+                                builder.setTitle("Scanned Text");
+                                builder.setPositiveButton("Copy All", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Copy the text to the clipboard
+                                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                        ClipData clip = ClipData.newPlainText("Scanned Text", resultText);
+                                        clipboard.setPrimaryClip(clip);
+                                        Toast.makeText(ImageDetailActivity.this, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                // Show the AlertDialog
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            }
+                        })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(ImageDetailActivity.this, "There are some errors!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+    }
+
+    private int getRotationDegree(String imagePath) {
+        int rotationDegree = 0;
+        try {
+            ExifInterface exif = new ExifInterface(imagePath);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotationDegree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotationDegree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotationDegree = 270;
+                    break;
+                default:
+                    rotationDegree = 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rotationDegree;
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent mEvent) {

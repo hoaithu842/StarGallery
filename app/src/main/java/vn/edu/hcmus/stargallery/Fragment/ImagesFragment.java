@@ -181,6 +181,7 @@ public class ImagesFragment extends Fragment {
                     filteredImages = null;
                     updateLabel(images);
                     imagesView.getAdapter().notifyDataSetChanged();
+                    isFiltered = !isFiltered;
                 } else {
                     // If images are not filtered, show the popup menu
                     PopupMenu popupMenu = new PopupMenu(requireContext(), view);
