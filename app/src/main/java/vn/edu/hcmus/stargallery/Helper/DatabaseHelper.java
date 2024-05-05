@@ -75,7 +75,7 @@ public class DatabaseHelper {
         try {
             db.beginTransaction();
             try {
-                db.execSQL("INSERT INTO " + TABLE_FAVORITE + "(PATH) values ('" + path + "');");
+                db.execSQL("INSERT OR IGNORE INTO " + TABLE_FAVORITE + "(PATH) values ('" + path + "');");
                 db.setTransactionSuccessful(); //commit your changes
             } catch (SQLiteException e) {
                 //
@@ -95,7 +95,7 @@ public class DatabaseHelper {
             try {
                 // Loop through each path and insert it into the table
                 for (String path : paths) {
-                    db.execSQL("INSERT INTO " + TABLE_FAVORITE + "(PATH) VALUES ('" + path + "');");
+                    db.execSQL("INSERT OR IGNORE INTO " + TABLE_FAVORITE + "(PATH) VALUES ('" + path + "');");
                 }
                 db.setTransactionSuccessful(); // commit your changes
             } catch (SQLiteException e) {
@@ -176,7 +176,7 @@ public class DatabaseHelper {
     try {
         db.beginTransaction();
         try {
-            db.execSQL("INSERT INTO " + TABLE_TRASH + "(PATH) values ('" + path + "');");
+            db.execSQL("INSERT OR IGNORE INTO " + TABLE_TRASH + "(PATH) values ('" + path + "');");
             db.execSQL("DELETE FROM " + TABLE_FAVORITE + " WHERE PATH='" + path + "'");
             db.execSQL("DELETE FROM " + ALBUMS + " WHERE PATH='" + path + "'");
             db.setTransactionSuccessful(); //commit your changes
@@ -198,7 +198,9 @@ public class DatabaseHelper {
             try {
                 // Loop through each path and insert it into the table
                 for (String path : paths) {
-                    db.execSQL("INSERT INTO " + TABLE_TRASH + "(PATH) VALUES ('" + path + "');");
+                    db.execSQL("INSERT OR IGNORE INTO " + TABLE_TRASH + "(PATH) VALUES ('" + path + "');");
+                    db.execSQL("DELETE FROM " + TABLE_FAVORITE + " WHERE PATH='" + path + "'");
+                    db.execSQL("DELETE FROM " + ALBUMS + " WHERE PATH='" + path + "'");
                 }
                 db.setTransactionSuccessful(); // commit your changes
             } catch (SQLiteException e) {
@@ -307,7 +309,7 @@ public class DatabaseHelper {
         try {
             db.beginTransaction();
             try {
-                db.execSQL("INSERT INTO " + ALBUM_NAMES + "(NAME) values ('" + name + "');");
+                db.execSQL("INSERT OR IGNORE INTO " + ALBUM_NAMES + "(NAME) values ('" + name + "');");
                 db.setTransactionSuccessful(); //commit your changes
             } catch (SQLiteException e) {
                 //
@@ -343,7 +345,7 @@ public class DatabaseHelper {
 
                     // Loop through each image path and insert it into the table
                     for (String imagePath : image_list) {
-                        String insertStatement = "INSERT INTO " + ALBUMS + " (PATH, ALBUM_ID) VALUES ('"
+                        String insertStatement = "INSERT OR IGNORE INTO " + ALBUMS + " (PATH, ALBUM_ID) VALUES ('"
                               + imagePath + "', '" + albumID + "');";
                         // Ensure the path is properly escaped to prevent SQL injection
                         db.execSQL(insertStatement);
@@ -361,7 +363,6 @@ public class DatabaseHelper {
             // Handle exception
         }
     }
-
 
     public boolean albumExists(String albName) {
         boolean exists = false;
@@ -388,7 +389,7 @@ public class DatabaseHelper {
         try {
             db.beginTransaction();
             try {
-                db.execSQL("INSERT INTO " + ALBUM_NAMES + "(NAME) values ('" + ALBUM_NAME + "');");
+                db.execSQL("INSERT OR IGNORE INTO " + ALBUM_NAMES + "(NAME) values ('" + ALBUM_NAME + "');");
                 db.setTransactionSuccessful(); //commit your changes
             } catch (SQLiteException e) {
                 //
@@ -454,4 +455,32 @@ public class DatabaseHelper {
         }
         return favoriteImages;
     }
+
+    public void deleteAlbum(String abName) {
+        try {
+            db.beginTransaction();
+            try {
+                String query = "SELECT ID FROM " + ALBUM_NAMES + " WHERE NAME=?";
+                Cursor cursor = db.rawQuery(query, new String[]{abName});
+                int albumID = -1;
+                if (cursor.moveToFirst()) {
+                    albumID = cursor.getInt(cursor.getColumnIndex("ID"));
+                }
+                cursor.close();
+                if (albumID != -1) {
+                    String deleteAlbumNamesSQL = "DELETE FROM " + ALBUM_NAMES + " WHERE NAME=?";
+                    db.execSQL(deleteAlbumNamesSQL, new String[]{abName});
+
+                    String deleteAlbumsSQL = "DELETE FROM " + ALBUMS + " WHERE ALBUM_ID=?";
+                    db.execSQL(deleteAlbumsSQL, new String[]{String.valueOf(albumID)});
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        } catch (SQLiteException e) {
+            // Handle the exception, e.g., log it or show an error message
+        }
+    }
+
 }

@@ -58,6 +58,8 @@ public class MultiSelectImageActivity extends AppCompatActivity {
     ImageButton backBtn;
     ImageButton addBtn;
     ImageButton toTrashBtn;
+    int REQUEST_CODE_TO_TRASH = 20;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiselect_image);
@@ -78,12 +80,6 @@ public class MultiSelectImageActivity extends AppCompatActivity {
             imagesView.setAdapter(adapter);
             imagesView.setLayoutManager(manager);
 
-            if(image_path != null && image_path != ""){
-                Log.d("OOOOOOOO", image_path);
-            }
-            if(album_name != null && album_name != ""){
-                Log.d("QQQQQQQQQQQ", album_name);
-            }
         }
         backBtn = findViewById(R.id.multi_backbtn);
         backBtn.setOnClickListener(new View.OnClickListener() {

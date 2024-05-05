@@ -490,11 +490,14 @@ public class ImageDetailActivity extends AppCompatActivity {
         confirmDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("itemDeleted", currentIndex);
-                images_list.remove(getPosition(currentIndex));
                 dbHelper.AddToTrashImage(image_path);
-                finish();
+                images_list.remove(currentIndex);
+                if (images_list.size() > currentIndex) {
+                    loadImage(images_list.get(currentIndex));
+                } else if (images_list.size() > currentIndex - 1) {
+                    currentIndex--;
+                    loadImage(images_list.get(currentIndex-1));
+                }
             }
         });
         confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -539,4 +542,6 @@ public class ImageDetailActivity extends AppCompatActivity {
         }
         return rotationDegree;
     }
+
+
 }

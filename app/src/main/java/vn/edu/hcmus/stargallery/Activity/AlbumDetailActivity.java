@@ -105,4 +105,17 @@ public class AlbumDetailActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("AlbumDetailActivity", "onResume");
+
+        // Check if there are changes to the images list while the activity was paused or stopped
+        int previousSize = images.size();
+        images.removeAll(dbHelper.getTrashImages());
+        if (previousSize != images.size()) {
+            // If there are changes, notify the adapter
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

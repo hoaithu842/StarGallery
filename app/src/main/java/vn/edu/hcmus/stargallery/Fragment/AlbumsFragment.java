@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ import java.util.Objects;
 
 import vn.edu.hcmus.stargallery.Activity.AlbumDetailActivity;
 import vn.edu.hcmus.stargallery.Activity.ImageDetailActivity;
+import vn.edu.hcmus.stargallery.Activity.MultiSelectImageActivity;
 import vn.edu.hcmus.stargallery.Adapter.AlbumsViewAdapter;
 import vn.edu.hcmus.stargallery.Adapter.ImagesViewAdapter;
 import vn.edu.hcmus.stargallery.Helper.DatabaseHelper;
@@ -50,8 +52,9 @@ public class AlbumsFragment extends Fragment {
     ArrayList<String> sorted_albums;
     AlbumsViewAdapter adapter;
     GridLayoutManager manager;
-//    AppCompatImageButton addAlbumBtn;
+    DatabaseHelper dbHelper;
     ImageButton addAlbumBtn;
+    ImageButton delAlbumBtn;
     boolean shouldExecuteOnResume = false;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class AlbumsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         albums = new HashMap<>();
+        dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
         adapter = new AlbumsViewAdapter(getContext(), albums);
         manager = new GridLayoutManager(getContext(), 2);
         adapter.setOnClickListener(new AlbumsViewAdapter.OnClickListener() {
@@ -89,8 +93,8 @@ public class AlbumsFragment extends Fragment {
         albumsView = layout.findViewById(R.id.albums_view);
         albumsView.setAdapter(adapter);
         albumsView.setLayoutManager(manager);
-        addAlbumBtn = layout.findViewById(R.id.add_album_btn);
 
+        addAlbumBtn = layout.findViewById(R.id.add_album_btn);
         addAlbumBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,7 +103,7 @@ public class AlbumsFragment extends Fragment {
                 View dialogView = inflater.inflate(R.layout.create_alum_text, null);
                 final EditText input = dialogView.findViewById(R.id.album_name_input);
                 confirmDialog.setView(dialogView);
-                confirmDialog.setTitle("Add album");
+                confirmDialog.setTitle("ADD ALBUM");
                 confirmDialog.setMessage("Enter album's name");
                 confirmDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
@@ -108,6 +112,8 @@ public class AlbumsFragment extends Fragment {
                         if (!abName.isEmpty()) {
                             createAlbum(abName);
                             Log.d("TEN ALBUM", input.getText().toString());
+                            albums.clear();
+                            loadAlbums();
                         } else {
                             Log.d("KO PHAI TEN ALBUM", "___");
                         }
@@ -123,12 +129,52 @@ public class AlbumsFragment extends Fragment {
                 confirmDialog.show();
             }
         });
+
+
+
+        delAlbumBtn = layout.findViewById(R.id.delete_album_btn);
+        delAlbumBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> album_list = dbHelper.getAlbums();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("DELETE ALBUMS");
+                builder.setItems(album_list.toArray(new String[album_list.size()]), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String selectedAlbum = album_list.get(which);
+//                        Toast.makeText(getContext(), "Selected album: " + selectedAlbum, Toast.LENGTH_SHORT).show();
+                            final AlertDialog.Builder confirmDialog = new AlertDialog.Builder(getContext());
+                            confirmDialog.setTitle("Delete album");
+                            confirmDialog.setMessage("Are you sure you want to delete " + selectedAlbum +"?");
+                            confirmDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dbHelper.deleteAlbum(selectedAlbum);
+                                    Toast.makeText(getContext(), "Album deleted", Toast.LENGTH_SHORT).show();
+                                    albums.clear();
+                                    loadAlbums();
+                                }
+                            });
+                            confirmDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            confirmDialog.show();
+                    }
+                });
+                builder.show();
+
+            }
+        });
+
         loadAlbums();
         return layout;
     }
 
     private void loadAlbums() {
-        DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
         ArrayList<String> imagesList;//= dbHelper.getFavoriteImages();
 //        albums.put("Favorites", imagesList);
         ArrayList<String> deleted = dbHelper.getTrashImages();
@@ -171,11 +217,16 @@ public class AlbumsFragment extends Fragment {
     }
 
     private void createAlbum(String albName) {
-        DatabaseHelper dbHelper = new DatabaseHelper((Application) requireActivity().getApplicationContext());
         if (dbHelper.createNewAlbum(albName)) {
             Log.d("DB", "Duplicated!");
         } else {
             Log.d("DB", "Created! -> Notify");
         }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        albums.clear();
+        loadAlbums();
     }
 }

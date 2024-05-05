@@ -38,34 +38,19 @@
             android:textSize="18dp"
             android:text="Total o day"
             android:textColor="@color/gray"/>
-        <ImageButton
-            android:id="@+id/add_album_btn"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:background="@drawable/a_add_album"/>
-            <ImageButton
+                android:visibility="invisible"
                 android:id="@+id/sync_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/icon_sync"/>
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:background="@drawable/a_add_album"/>        </LinearLayout>
-
-
-
-    </LinearLayout>
+                android:background="@drawable/icon_sync"/>      </LinearLayout>
+        </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/album_images_view"
@@ -74,3 +59,23 @@
         android:layout_weight="2"/>
 
 </LinearLayout>
+<!--<LinearLayout-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="horizontal"-->
+<!--android:gravity="center">-->
+<!--<ImageButton-->
+<!--    android:layout_width="50dp"-->
+<!--    android:layout_height="50dp"-->
+<!--    android:layout_margin="2dp"-->
+<!--    android:background="@drawable/a_add_album"/>-->
+<!--<ImageButton-->
+<!--    android:layout_width="50dp"-->
+<!--    android:layout_height="50dp"-->
+<!--    android:layout_margin="2dp"-->
+<!--    android:background="@drawable/a_add_album"/>-->
+<!--<ImageButton-->
+<!--    android:layout_width="50dp"-->
+<!--    android:layout_height="50dp"-->
+<!--    android:layout_margin="2dp"-->
+<!--    android:background="@drawable/a_add_album"/>        </LinearLayout>-->

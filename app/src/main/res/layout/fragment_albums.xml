@@ -39,6 +39,14 @@
             android:layout_gravity="center_vertical"
             android:background="@drawable/a_add_album"
             android:contentDescription="Add Album" />
+
+        <ImageButton
+            android:id="@+id/delete_album_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/d_cancel_btn"
+            android:contentDescription="Add Album" />
     </LinearLayout>
 
 

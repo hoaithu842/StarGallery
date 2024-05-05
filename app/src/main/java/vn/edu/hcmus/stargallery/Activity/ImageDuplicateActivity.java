@@ -82,6 +82,7 @@ public class ImageDuplicateActivity extends AppCompatActivity {
         findDuplicate();
 
         ImageButton syncButton = findViewById(R.id.sync_button);
+        syncButton.setVisibility(View.VISIBLE);
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

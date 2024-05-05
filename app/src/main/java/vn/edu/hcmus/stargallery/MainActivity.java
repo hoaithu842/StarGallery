@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        nav.setSelectedItemId(R.id.show_photos);
     }
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
